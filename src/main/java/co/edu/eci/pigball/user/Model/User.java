@@ -1,4 +1,4 @@
-package co.edu.eci.pigball.user.Model;
+package co.edu.eci.pigball.user.model;
 
 
 
