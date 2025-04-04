@@ -3,8 +3,8 @@ package co.edu.eci.pigball.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.edu.eci.pigball.user.Model.User;
 import co.edu.eci.pigball.user.dto.UserDTO;
+import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.repository.UserRepository;
 
 import java.util.List;
@@ -20,12 +20,8 @@ public class UserService {
     // Crear usuario
     public UserDTO createUser(UserDTO userDTO) {
         User user = User.builder()
+                .id(userDTO.getId())
                 .username(userDTO.getUsername())
-                // Se omiten gamesPlayed y winningPercentage ya que son calculados
-                .lostGames(userDTO.getLostGames())
-                .gamesWon(userDTO.getGamesWon())
-                .totalScore(userDTO.getTotalScore())
-                .bestScore(userDTO.getBestScore())
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -37,17 +33,15 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // No se suma manualmente gamesPlayed, ya que se calcula como lostGames + gamesWon
+
         user.addToTotalScore(score);
         if (isWinner) {
             user.incrementGamesWon();
         } else {
             user.incrementLostGames();
         }
-        if (score > user.getBestScore()) {
-            user.updateBestScore(score);
-        }
 
+        user.updateBestScore(score); 
         User updatedUser = userRepository.save(user);
         return convertToDTO(updatedUser);
     }

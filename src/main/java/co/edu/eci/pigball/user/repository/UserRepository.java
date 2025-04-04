@@ -3,7 +3,7 @@ package co.edu.eci.pigball.user.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import co.edu.eci.pigball.user.Model.User;
+import co.edu.eci.pigball.user.model.User;
 
 import java.util.Optional;
 
