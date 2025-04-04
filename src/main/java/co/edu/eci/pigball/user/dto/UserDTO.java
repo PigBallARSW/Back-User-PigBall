@@ -12,8 +12,10 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private String id;
     private String username;
+    private int gamesPlayed;
     private int lostGames;
     private int gamesWon;
     private int totalScore;
+    private double winningPercentage;
     private int bestScore;
 }

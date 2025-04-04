@@ -108,6 +108,8 @@ public class UserService {
                 .gamesWon(user.getGamesWon())
                 .totalScore(user.getTotalScore())
                 .bestScore(user.getBestScore())
+                .gamesPlayed(user.getGamesPlayed())  // Calculado
+                .winningPercentage(user.getWinningPercentage())  // Calculado
                 .build();
     }
 }
