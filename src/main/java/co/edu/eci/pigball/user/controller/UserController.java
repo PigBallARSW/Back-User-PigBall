@@ -24,7 +24,7 @@ public class UserController {
 
     // Crear usuario
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody CreateUserDTO userDTO) {
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody CreateUserDTO userDTO) {
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
     }
 
@@ -56,7 +56,7 @@ public class UserController {
 
     // Actualizar el nombre de los usuarios
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id, @RequestBody @Valid UpdateUserDTO userDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id, @RequestBody UpdateUserDTO userDTO) {
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
