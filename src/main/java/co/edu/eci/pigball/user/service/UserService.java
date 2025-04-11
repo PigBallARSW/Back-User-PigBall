@@ -3,7 +3,9 @@ package co.edu.eci.pigball.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.edu.eci.pigball.user.dto.UserDTO;
+import co.edu.eci.pigball.user.dto.CreateUserDTO;
+import co.edu.eci.pigball.user.dto.UpdateUserDTO;
+import co.edu.eci.pigball.user.dto.UserResponseDTO;
 import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.repository.UserRepository;
 
@@ -18,7 +20,12 @@ public class UserService {
     private UserRepository userRepository;
 
     // Crear usuario
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserResponseDTO createUser(CreateUserDTO userDTO) {
+
+        if (userRepository.existsById(userDTO.getId())) {
+            throw new RuntimeException("El ID ya existe");
+        }
+
         User user = User.builder()
                 .id(userDTO.getId())
                 .username(userDTO.getUsername())
@@ -29,7 +36,7 @@ public class UserService {
     }
 
     // Actualizar estadísticas (existente)
-    public UserDTO updateUserStats(String userId, int score, boolean isWinner) {
+    public UserResponseDTO updateUserStats(String userId, int score, boolean isWinner) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -47,21 +54,21 @@ public class UserService {
     }
 
     // Obtener usuario por ID
-    public UserDTO getUserById(String userId) {
+    public UserResponseDTO getUserById(String userId) {
         return userRepository.findById(userId)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
     // Obtener usuario por username
-    public UserDTO getUserByUsername(String username) {
+    public UserResponseDTO getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
     // Listar todos los usuarios
-    public List<UserDTO> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
@@ -77,16 +84,12 @@ public class UserService {
     }
 
     // Actualizar todos los campos de un usuario
-    public UserDTO updateUser(String userId, UserDTO userDTO) {
+    public UserResponseDTO updateUser(String userId, UpdateUserDTO userDTO) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Se actualiza solo el username y los contadores base
         existingUser.setUsername(userDTO.getUsername());
-        existingUser.setLostGames(userDTO.getLostGames());
-        existingUser.setGamesWon(userDTO.getGamesWon());
-        existingUser.setTotalScore(userDTO.getTotalScore());
-        existingUser.setBestScore(userDTO.getBestScore());
         // gamesPlayed y winningPercentage se calcularán automáticamente
 
         User updatedUser = userRepository.save(existingUser);
@@ -94,8 +97,8 @@ public class UserService {
     }
 
     // Conversor de Entidad a DTO (privado)
-    private UserDTO convertToDTO(User user) {
-        return UserDTO.builder()
+    private UserResponseDTO convertToDTO(User user) {
+        return UserResponseDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername()) // Calculado
                 .lostGames(user.getLostGames())
