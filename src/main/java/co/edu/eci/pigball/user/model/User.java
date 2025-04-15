@@ -1,4 +1,4 @@
-package co.edu.eci.pigball.user.changeName;
+package co.edu.eci.pigball.user.model;
 
 
 
