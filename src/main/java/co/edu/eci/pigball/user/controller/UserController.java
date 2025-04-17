@@ -3,7 +3,7 @@ package co.edu.eci.pigball.user.controller;
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
-import co.edu.eci.pigball.user.service.UserService;
+import co.edu.eci.pigball.user.service.UserServiceImp;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -16,15 +16,15 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     
-    private final UserService userService;
+    private final UserServiceImp userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImp userService) {
         this.userService = userService;
     }
 
     // Crear usuario
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody CreateUserDTO userDTO) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
     }
 
@@ -56,7 +56,7 @@ public class UserController {
 
     // Actualizar el nombre de los usuarios
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id, @RequestBody UpdateUserDTO userDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id,@Valid @RequestBody UpdateUserDTO userDTO) {
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
