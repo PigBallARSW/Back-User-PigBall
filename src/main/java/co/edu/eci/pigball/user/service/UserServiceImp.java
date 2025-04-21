@@ -1,5 +1,6 @@
 package co.edu.eci.pigball.user.service;
 
+import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import co.edu.eci.pigball.user.exception.ResourceNotFoundException;
 import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.repository.UserRepository;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,5 +107,82 @@ public class UserServiceImp implements UserService {
                 .gamesPlayed(user.getGamesPlayed())  // Calculado
                 .winningPercentage(user.getWinningPercentage())  // Calculado
                 .build();
+    }
+
+    public String updateStats(UpdateStatsRequest request){
+        Map<String, Integer> pointsMap = Map.of(
+                "GOAL_SCORED", 20,
+                "SELF_GOAL_SCORED", -10,
+                "GOAL_ASSIST", 10
+        );
+
+        Map<Integer, Integer> teamGoals = new HashMap<>();
+        teamGoals.put(0, 0);
+        teamGoals.put(1, 0);
+
+        for (UpdateStatsRequest.Stat stat : request.getStats()) {
+            String playerId = stat.getFirst();
+            String event = stat.getSecond();
+
+            UpdateStatsRequest.PlayerDTO player = request.getPlayers()
+                    .stream()
+                    .filter(p -> p.getId().equals(playerId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (player == null) continue;
+
+            // Buscar usuario por ID en base de datos
+            Optional<User> userOpt = userRepository.findById(playerId);
+            if (userOpt.isEmpty()) continue;
+
+            User user = userOpt.get();
+
+            int points = pointsMap.getOrDefault(event, 0);
+
+            user.addToTotalScore(points);
+            user.updateBestScore(points);
+
+            // Sumar goles por equipo si fue un GOAL_SCORED
+            if ("GOAL_SCORED".equals(event)) {
+                teamGoals.put(player.getTeam(), teamGoals.get(player.getTeam()) + 1);
+            }
+
+            userRepository.save(user);
+        }
+
+        int goalsTeam0 = teamGoals.get(0);
+        int goalsTeam1 = teamGoals.get(1);
+
+        String result;
+        if (goalsTeam0 > goalsTeam1) {
+
+            updateGameStats(request, 0, true);  // Team 0 ganó
+            updateGameStats(request, 1, false); // Team 1 perdió
+        } else if (goalsTeam1 > goalsTeam0) {
+
+            updateGameStats(request, 0, false); // Team 0 perdió
+            updateGameStats(request, 1, true);  // Team 1 ganó
+        }
+
+        return "statistics update successful";
+    }
+    private void updateGameStats(UpdateStatsRequest request, int team, boolean teamWon) {
+        List<User> usersToUpdate = new ArrayList<>();
+        for (UpdateStatsRequest.PlayerDTO player : request.getPlayers()) {
+            if (player.getTeam() == team) {
+                Optional<User> userOpt = userRepository.findById(player.getId());
+                if (userOpt.isPresent()) {
+                    User user = userOpt.get();
+                    if (teamWon) {
+                        user.incrementGamesWon();
+                    } else {
+                        user.incrementLostGames();
+                    }
+                    usersToUpdate.add(user);
+                }
+            }
+        }
+        userRepository.saveAll(usersToUpdate);
     }
 }

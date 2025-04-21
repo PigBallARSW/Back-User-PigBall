@@ -3,6 +3,7 @@ package co.edu.eci.pigball.user.controller;
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
+import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import co.edu.eci.pigball.user.service.UserServiceImp;
 import jakarta.validation.Valid;
 
@@ -47,7 +48,7 @@ public class UserController {
     }
 
     // Actualizar estadísticas de un usuario
-    @PutMapping("/{id}/stats")
+    @PutMapping("/stats/{id}")
     public ResponseEntity<UserResponseDTO> updateUserStats(@PathVariable String id, 
                                                    @RequestParam int score, 
                                                    @RequestParam boolean isWinner) {
@@ -58,6 +59,10 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id,@Valid @RequestBody UpdateUserDTO userDTO) {
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
+    }
+    @PutMapping("/stats")
+    public ResponseEntity<?> updateStats(@Valid @RequestBody UpdateStatsRequest statsRequest) {
+        return ResponseEntity.ok(userService.updateStats(statsRequest));
     }
 
     // Eliminar usuario
