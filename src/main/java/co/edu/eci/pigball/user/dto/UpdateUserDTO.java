@@ -24,5 +24,5 @@ public class UpdateUserDTO {
     @Pattern(regexp = "^#[0-9A-Fa-f]{6}$", message = "El iconColor debe estar en formato hexadecimal #RRGGBB")
     private String iconColor; // Color del icono
 
-    private String iconType; // Tipo de icono (opcional)
+    private String iconType;
 }

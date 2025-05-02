@@ -31,6 +31,7 @@ public class UserServiceImp implements UserService {
                 .id(userDTO.getId())
                 .username(userDTO.getUsername())
                 .image(userDTO.getImage())
+                .iconType(userDTO.getIconType())
                 .borderColor(userDTO.getBorderColor())
                 .centerColor(userDTO.getCenterColor())
                 .iconColor(userDTO.getIconColor())
@@ -92,6 +93,9 @@ public class UserServiceImp implements UserService {
         if (userDTO.getImage() != null) {
             existingUser.setImage(userDTO.getImage());
         }
+        if (userDTO.getIconType() != null) {
+            existingUser.setIconType(userDTO.getIconType());
+        }
         if (userDTO.getBorderColor() != null) {
             existingUser.setBorderColor(userDTO.getBorderColor());
         }
@@ -129,6 +133,7 @@ public class UserServiceImp implements UserService {
                 .gamesPlayed(user.getGamesPlayed()) // Calculado
                 .winningPercentage(user.getWinningPercentage()) // Calculado
                 .image(user.getImage())
+                .iconType(user.getIconType())
                 .borderColor(user.getBorderColor())
                 .centerColor(user.getCenterColor())
                 .iconType(user.getIconType())
