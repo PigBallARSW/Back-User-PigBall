@@ -1,4 +1,4 @@
-package co.edu.eci.pigball.user;
+package co.edu.eci.pigball;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,8 +11,6 @@ import co.edu.eci.pigball.user.service.UserServiceImp;
 
 @SpringBootTest
 class UserApplicationTests {
-
-
 
 /* 	@Test
 	void contextLoads() {

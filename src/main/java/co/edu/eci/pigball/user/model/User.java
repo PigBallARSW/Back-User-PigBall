@@ -2,8 +2,14 @@ package co.edu.eci.pigball.user.model;
 
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import co.edu.eci.pigball.user.dto.RGB;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,6 +38,15 @@ public class User {
     @Builder.Default 
     private int bestScore = 0;
 
+    private String image;
+
+    private RGB borderColor;  // Color del borde
+
+    private RGB centerColor; 
+
+    @Builder.Default
+    private Set<String> friendsIds = new HashSet<>();
+
     // --- Métodos de actualización ---
     public void incrementLostGames() {
         this.lostGames++;
@@ -59,5 +74,17 @@ public class User {
 
     public double getWinningPercentage() {
         return getGamesPlayed() > 0 ? (gamesWon * 100.0) / getGamesPlayed() : 0.0;
+    }
+
+    public void addFriendId(String friendId) {
+        if (friendId != null) {
+            friendsIds.add(friendId);
+        }
+    }
+
+    public void removeFriendId(String friendId) {
+        if (friendId != null) {
+            friendsIds.remove(friendId);
+        }
     }
 }
