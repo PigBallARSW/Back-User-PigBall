@@ -3,6 +3,7 @@ package co.edu.eci.pigball.user.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 /* import jakarta.validation.constraints.Pattern; */
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,19 +25,20 @@ public class CreateUserDTO {
     @NotBlank(message = "La imagen es obligatoria")
     private String image;
 
-    @NotNull(message = "El color del icono es obligatorio")
-    @Valid
-    private RGB iconColor;  
+    @NotBlank(message = "El iconColor es obligatorio")
+    @Pattern(regexp = "^#[0-9A-Fa-f]{6}$", message = "El iconColor debe estar en formato hexadecimal #RRGGBB")
+    private String iconColor;
 
-    @NotNull(message = "El color del borde es obligatorio")
-    @Valid
-    private RGB borderColor;  // Color del borde
+    @NotBlank(message = "El borderColor es obligatorio")
+    @Pattern(regexp = "^#[0-9A-Fa-f]{6}$", message = "El borderColor debe estar en formato hexadecimal #RRGGBB")
+    private String borderColor;
 
-    @NotNull(message = "El color del centro es obligatorio")
-    @Valid
-    private RGB centerColor;
+    @NotBlank(message = "El centerColor es obligatorio")
+    @Pattern(regexp = "^#[0-9A-Fa-f]{6}$", message = "El centerColor debe estar en formato hexadecimal #RRGGBB")
+    private String centerColor;
 
     @NotNull(message = "El tipo de icono es obligatorio")
     @Valid
     private String iconType;
+
 }
