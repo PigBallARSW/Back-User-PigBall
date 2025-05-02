@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService {
                 .username(userDTO.getUsername())
                 .image(userDTO.getImage())
                 .borderColor(userDTO.getBorderColor())
-                .centerColor(userDTO.getCenterColor())                
+                .centerColor(userDTO.getCenterColor())
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -45,85 +45,92 @@ public class UserServiceImp implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
 
         user.addToTotalScore(score);
-        user.updateBestScore(score); 
+        user.updateBestScore(score);
 
         if (isWinner) {
             user.incrementGamesWon();
         } else {
             user.incrementLostGames();
         }
-        
+
         return convertToDTO(userRepository.save(user));
     }
 
-        // Listar todos los usuarios
-        public List<UserResponseDTO> getAllUsers() {
-            return userRepository.findAll()
-                    .stream()
-                    .map(this::convertToDTO)
-                    .collect(Collectors.toList());
-        }    
+    // Listar todos los usuarios
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     // Obtener usuario por ID
     public UserResponseDTO getUserById(String userId) {
         return userRepository.findById(userId)
                 .map(this::convertToDTO)
-                .orElseThrow(() ->  new ResourceNotFoundException("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
     }
 
     // Obtener usuario por username
     public UserResponseDTO getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(this::convertToDTO)
-                .orElseThrow(() ->  new ResourceNotFoundException("Usuario", username));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", username));
     }
-
 
     // Actualizar todos los campos de un usuario
     public UserResponseDTO updateUser(String userId, UpdateUserDTO userDTO) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
-       
-        existingUser.setUsername(userDTO.getUsername());
-        existingUser.setImage(userDTO.getImage());
-        existingUser.setBorderColor(userDTO.getBorderColor());
-        existingUser.setCenterColor(userDTO.getCenterColor());
-      
+
+        // Actualiza solo los campos no nulos del DTO
+        if (userDTO.getUsername() != null) {
+            existingUser.setUsername(userDTO.getUsername());
+        }
+        if (userDTO.getImage() != null) {
+            existingUser.setImage(userDTO.getImage());
+        }
+        if (userDTO.getBorderColor() != null) {
+            existingUser.setBorderColor(userDTO.getBorderColor());
+        }
+        if (userDTO.getCenterColor() != null) {
+            existingUser.setCenterColor(userDTO.getCenterColor());
+        }
+
         User updatedUser = userRepository.save(existingUser);
         return convertToDTO(updatedUser);
     }
 
-        // Eliminar usuario por ID
-        public void deleteUser(String userId) {
-            userRepository.findById(userId)
-                .orElseThrow(() ->  new ResourceNotFoundException("Usuario", userId));
-            
-            userRepository.deleteById(userId);
-        }
+    // Eliminar usuario por ID
+    public void deleteUser(String userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
+
+        userRepository.deleteById(userId);
+    }
 
     // Conversor de Entidad a DTO (privado)
     private UserResponseDTO convertToDTO(User user) {
         return UserResponseDTO.builder()
                 .id(user.getId())
-                .username(user.getUsername()) 
+                .username(user.getUsername())
                 .lostGames(user.getLostGames())
                 .gamesWon(user.getGamesWon())
                 .totalScore(user.getTotalScore())
                 .bestScore(user.getBestScore())
-                .gamesPlayed(user.getGamesPlayed())  // Calculado
-                .winningPercentage(user.getWinningPercentage())  // Calculado
+                .gamesPlayed(user.getGamesPlayed()) // Calculado
+                .winningPercentage(user.getWinningPercentage()) // Calculado
                 .image(user.getImage())
                 .borderColor(user.getBorderColor())
                 .centerColor(user.getCenterColor())
-                .build();   
+                .build();
     }
 
-    public String updateStats(UpdateStatsRequest request){
+    public String updateStats(UpdateStatsRequest request) {
         Map<String, Integer> pointsMap = Map.of(
                 "GOAL_SCORED", 20,
                 "SELF_GOAL_SCORED", -10,
-                "GOAL_ASSIST", 10
-        );
+                "GOAL_ASSIST", 10);
 
         Map<Integer, Integer> teamGoals = new HashMap<>();
         teamGoals.put(0, 0);
@@ -139,11 +146,13 @@ public class UserServiceImp implements UserService {
                     .findFirst()
                     .orElse(null);
 
-            if (player == null) continue;
+            if (player == null)
+                continue;
 
             // Buscar usuario por ID en base de datos
             Optional<User> userOpt = userRepository.findById(playerId);
-            if (userOpt.isEmpty()) continue;
+            if (userOpt.isEmpty())
+                continue;
 
             User user = userOpt.get();
 
@@ -166,16 +175,17 @@ public class UserServiceImp implements UserService {
         String result;
         if (goalsTeam0 > goalsTeam1) {
 
-            updateGameStats(request, 0, true);  // Team 0 ganó
+            updateGameStats(request, 0, true); // Team 0 ganó
             updateGameStats(request, 1, false); // Team 1 perdió
         } else if (goalsTeam1 > goalsTeam0) {
 
             updateGameStats(request, 0, false); // Team 0 perdió
-            updateGameStats(request, 1, true);  // Team 1 ganó
+            updateGameStats(request, 1, true); // Team 1 ganó
         }
 
         return "statistics update successful";
     }
+
     private void updateGameStats(UpdateStatsRequest request, int team, boolean teamWon) {
         List<User> usersToUpdate = new ArrayList<>();
         for (UpdateStatsRequest.PlayerDTO player : request.getPlayers()) {
