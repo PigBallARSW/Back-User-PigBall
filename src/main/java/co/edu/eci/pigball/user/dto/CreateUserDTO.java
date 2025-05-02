@@ -1,6 +1,5 @@
 package co.edu.eci.pigball.user.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -36,4 +35,8 @@ public class CreateUserDTO {
     @NotBlank(message = "El centerColor es obligatorio")
     @Pattern(regexp = "^#[0-9A-Fa-f]{6}$", message = "El centerColor debe estar en formato hexadecimal #RRGGBB")
     private String centerColor;
+
+    @NotNull(message = "El tipo de icono es obligatorio")
+    private String iconType;
+
 }

@@ -22,4 +22,5 @@ public class UserResponseDTO {
     private String borderColor;  
     private String centerColor;
     private String iconColor;
+    private String iconType;
 }
