@@ -36,4 +36,9 @@ public class CreateUserDTO {
     @NotBlank(message = "El centerColor es obligatorio")
     @Pattern(regexp = "^#[0-9A-Fa-f]{6}$", message = "El centerColor debe estar en formato hexadecimal #RRGGBB")
     private String centerColor;
+
+    @NotNull(message = "El tipo de icono es obligatorio")
+    @Valid
+    private String iconType;
+
 }

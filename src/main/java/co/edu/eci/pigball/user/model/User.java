@@ -39,7 +39,9 @@ public class User {
 
     private String image;
 
-    private String borderColor;  // Color del borde
+    private String borderColor;
+  
+    private String iconType;
 
     private String centerColor; 
 
