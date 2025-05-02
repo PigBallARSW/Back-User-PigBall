@@ -21,4 +21,5 @@ public class UserResponseDTO {
     private String image;
     private RGB borderColor;  
     private RGB centerColor;
+    private RGB iconColor;
 }

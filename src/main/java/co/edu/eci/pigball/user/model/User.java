@@ -44,6 +44,8 @@ public class User {
 
     private RGB centerColor; 
 
+    private RGB iconColor;  
+
     @Builder.Default
     private Set<String> friendsIds = new HashSet<>();
 

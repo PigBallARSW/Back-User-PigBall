@@ -15,4 +15,5 @@ public class UpdateUserDTO {
     private String image;
     private RGB borderColor;  // Color del borde
     private RGB centerColor; 
+    private RGB iconColor;   // Color del icono
 }

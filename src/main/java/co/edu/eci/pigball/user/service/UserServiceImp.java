@@ -33,6 +33,7 @@ public class UserServiceImp implements UserService {
                 .image(userDTO.getImage())
                 .borderColor(userDTO.getBorderColor())
                 .centerColor(userDTO.getCenterColor())
+                .iconColor(userDTO.getIconColor())
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -96,6 +97,9 @@ public class UserServiceImp implements UserService {
         if (userDTO.getCenterColor() != null) {
             existingUser.setCenterColor(userDTO.getCenterColor());
         }
+        if (userDTO.getIconColor() != null) {
+            existingUser.setIconColor(userDTO.getIconColor());
+        }
 
         User updatedUser = userRepository.save(existingUser);
         return convertToDTO(updatedUser);
@@ -123,6 +127,7 @@ public class UserServiceImp implements UserService {
                 .image(user.getImage())
                 .borderColor(user.getBorderColor())
                 .centerColor(user.getCenterColor())
+                .iconColor(user.getIconColor())
                 .build();
     }
 
