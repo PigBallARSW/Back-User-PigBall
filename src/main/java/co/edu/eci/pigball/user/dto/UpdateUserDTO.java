@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class UpdateUserDTO {
     private String username;
     private String image;
+    private String iconType;
     private RGB borderColor;  // Color del borde
     private RGB centerColor; 
     private RGB iconColor;   // Color del icono
