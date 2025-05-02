@@ -24,6 +24,10 @@ public class CreateUserDTO {
     @NotBlank(message = "La imagen es obligatoria")
     private String image;
 
+    @NotNull(message = "El color del icono es obligatorio")
+    @Valid
+    private RGB iconColor;  
+
     @NotNull(message = "El color del borde es obligatorio")
     @Valid
     private RGB borderColor;  // Color del borde
@@ -31,4 +35,6 @@ public class CreateUserDTO {
     @NotNull(message = "El color del centro es obligatorio")
     @Valid
     private RGB centerColor; 
+
+
 }
