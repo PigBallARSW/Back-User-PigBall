@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import co.edu.eci.pigball.user.dto.RGB;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,11 +39,11 @@ public class User {
 
     private String image;
 
-    private RGB borderColor;  // Color del borde
+    private String borderColor;  // Color del borde
 
-    private RGB centerColor; 
+    private String centerColor; 
 
-    private RGB iconColor;  
+    private String iconColor;  
 
     @Builder.Default
     private Set<String> friendsIds = new HashSet<>();

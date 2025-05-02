@@ -19,7 +19,7 @@ public class UserResponseDTO {
     private double winningPercentage;
     private int bestScore;
     private String image;
-    private RGB borderColor;  
-    private RGB centerColor;
-    private RGB iconColor;
+    private String borderColor;  
+    private String centerColor;
+    private String iconColor;
 }
