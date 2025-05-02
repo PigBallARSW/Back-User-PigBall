@@ -30,6 +30,9 @@ public class UserServiceImp implements UserService {
         User user = User.builder()
                 .id(userDTO.getId())
                 .username(userDTO.getUsername())
+                .image(userDTO.getImage())
+                .borderColor(userDTO.getBorderColor())
+                .centerColor(userDTO.getCenterColor())                
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -82,6 +85,9 @@ public class UserServiceImp implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
        
         existingUser.setUsername(userDTO.getUsername());
+        existingUser.setImage(userDTO.getImage());
+        existingUser.setBorderColor(userDTO.getBorderColor());
+        existingUser.setCenterColor(userDTO.getCenterColor());
       
         User updatedUser = userRepository.save(existingUser);
         return convertToDTO(updatedUser);
@@ -106,7 +112,10 @@ public class UserServiceImp implements UserService {
                 .bestScore(user.getBestScore())
                 .gamesPlayed(user.getGamesPlayed())  // Calculado
                 .winningPercentage(user.getWinningPercentage())  // Calculado
-                .build();
+                .image(user.getImage())
+                .borderColor(user.getBorderColor())
+                .centerColor(user.getCenterColor())
+                .build();   
     }
 
     public String updateStats(UpdateStatsRequest request){
