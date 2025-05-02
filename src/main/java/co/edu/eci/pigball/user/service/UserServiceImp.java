@@ -35,6 +35,7 @@ public class UserServiceImp implements UserService {
                 .borderColor(userDTO.getBorderColor())
                 .centerColor(userDTO.getCenterColor())
                 .iconColor(userDTO.getIconColor())
+                .iconType(userDTO.getIconType())
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -104,6 +105,9 @@ public class UserServiceImp implements UserService {
         if (userDTO.getIconColor() != null) {
             existingUser.setIconColor(userDTO.getIconColor());
         }
+        if (userDTO.getIconType() != null) {
+            existingUser.setIconType(userDTO.getIconType());
+        }
 
         User updatedUser = userRepository.save(existingUser);
         return convertToDTO(updatedUser);
@@ -132,6 +136,7 @@ public class UserServiceImp implements UserService {
                 .iconType(user.getIconType())
                 .borderColor(user.getBorderColor())
                 .centerColor(user.getCenterColor())
+                .iconType(user.getIconType())
                 .iconColor(user.getIconColor())
                 .build();
     }
