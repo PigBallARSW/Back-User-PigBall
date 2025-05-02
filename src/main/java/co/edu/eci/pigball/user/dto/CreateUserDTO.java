@@ -1,5 +1,6 @@
 package co.edu.eci.pigball.user.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 /* import jakarta.validation.constraints.Pattern; */
@@ -24,8 +25,10 @@ public class CreateUserDTO {
     private String image;
 
     @NotNull(message = "El color del borde es obligatorio")
+    @Valid
     private RGB borderColor;  // Color del borde
 
     @NotNull(message = "El color del centro es obligatorio")
+    @Valid
     private RGB centerColor; 
 }
