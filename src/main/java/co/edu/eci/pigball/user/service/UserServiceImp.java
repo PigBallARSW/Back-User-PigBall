@@ -8,6 +8,7 @@ import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
 import co.edu.eci.pigball.user.dto.UserSummaryDTO;
+import co.edu.eci.pigball.user.exception.DuplicateResourceException;
 import co.edu.eci.pigball.user.exception.ResourceNotFoundException;
 import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.repository.UserRepository;
@@ -24,9 +25,15 @@ public class UserServiceImp implements UserService {
     // Crear usuario
     public UserResponseDTO createUser(CreateUserDTO userDTO) {
 
-        if (userRepository.existsById(userDTO.getId())) {
-            throw new RuntimeException("El ID ya existe");
-        }
+        userRepository.findById(userDTO.getId())
+            .ifPresent(u -> {
+                throw new DuplicateResourceException("Usuario", userDTO.getId());
+            });
+
+        userRepository.findByUsername(userDTO.getUsername())
+            .ifPresent(u -> {
+                throw new DuplicateResourceException("Usuario", userDTO.getUsername());
+            });
 
         User user = User.builder()
                 .id(userDTO.getId())
