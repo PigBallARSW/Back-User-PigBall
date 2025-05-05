@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
+import co.edu.eci.pigball.user.dto.UserSummaryDTO;
 import co.edu.eci.pigball.user.exception.ResourceNotFoundException;
 import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.repository.UserRepository;
@@ -219,4 +220,10 @@ public class UserServiceImp implements UserService {
         }
         userRepository.saveAll(usersToUpdate);
     }
+
+        public List<UserSummaryDTO> getAllUserSummaries() {
+            return userRepository.findAllUserSummaries();
+        }
+
+
 }

@@ -3,6 +3,7 @@ package co.edu.eci.pigball.user.controller;
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
+import co.edu.eci.pigball.user.dto.UserSummaryDTO;
 import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import co.edu.eci.pigball.user.service.UserServiceImp;
 import jakarta.validation.Valid;
@@ -70,5 +71,10 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/summary")
+    public List<UserSummaryDTO> getUserSummaries() {
+        return userService.getAllUserSummaries();
     }
 }
