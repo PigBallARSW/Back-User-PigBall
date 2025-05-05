@@ -7,12 +7,16 @@ import lombok.Setter;
 @Setter
 public class DuplicateResourceException extends RuntimeException{
     
-    private String resourceName;
+    private String className;
+    private String atributeName;
     private String fieldName;
+    
 
-    public DuplicateResourceException(String resourceName, String fieldName) {
-        super(String.format("%s ya existe con el id : '%s'", resourceName, fieldName));
-        this.resourceName = resourceName;
+    public DuplicateResourceException(String className, String atributeName, String fieldName) {
+        super(String.format("%s already exists with '%s' : '%s'", className, atributeName ,fieldName));
+        this.className = className;
+        this.atributeName = atributeName;
         this.fieldName = fieldName;
+        
     }
 }

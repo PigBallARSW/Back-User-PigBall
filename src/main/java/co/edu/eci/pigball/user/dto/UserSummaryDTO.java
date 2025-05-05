@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserSummaryDTO {
     private String id;
     private String username;
@@ -15,5 +17,5 @@ public class UserSummaryDTO {
     private String iconType;
     private String borderColor;
     private String centerColor; 
-    private String iconColor;  
+    private String iconColor;
 }
