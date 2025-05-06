@@ -2,12 +2,16 @@ package co.edu.eci.pigball.user.service;
 
 import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
 import co.edu.eci.pigball.user.dto.UserSummaryDTO;
+import co.edu.eci.pigball.user.dto.UsersResponse;
 import co.edu.eci.pigball.user.exception.DuplicateResourceException;
 import co.edu.eci.pigball.user.exception.ResourceNotFoundException;
 import co.edu.eci.pigball.user.model.User;
@@ -86,7 +90,7 @@ public class UserServiceImp implements UserService {
         public UserResponseDTO getUserByUsername(String username) {
             return userRepository.findByUsername(username)
                     .map(this::convertToDTO)
-                    .orElseThrow(() -> new ResourceNotFoundException("User", "",username));
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "Username",username));
         }
 
     // Actualizar todos los campos de un usuario
@@ -220,8 +224,42 @@ public class UserServiceImp implements UserService {
         userRepository.saveAll(usersToUpdate);
     }
 
-        public List<UserSummaryDTO> getAllUserSummaries() {
-            return userRepository.findAllUserSummaries();
-        }
+    public List<UserSummaryDTO> getAllUserSummaries(List<String> ids) {
+        return userRepository.findAllUserSummaries(ids);
+    }
+
+    public UsersResponse findPotentialFriends(
+        String currentUserId, String searchTerm, int pageNumber, int pageSize, String sortBy, String sortDir) {
+    
+    Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) 
+        ? Sort.by(sortBy).ascending() 
+        : Sort.by(sortBy).descending();
+    
+    PageRequest pageable = PageRequest.of(pageNumber, pageSize, sort);
+    
+    Page<User> usersPage;
+    if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+        usersPage = userRepository.findByUsernameContainingIgnoreCaseAndIdNot(
+                searchTerm.trim(), currentUserId, pageable);
+    } else {
+        usersPage = userRepository.findByIdNot(currentUserId, pageable);
+    }
+    
+    List<UserResponseDTO> content = usersPage.getContent().stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+    
+    UsersResponse usersResponse = UsersResponse.builder()
+        .users(content)
+        .pagesNo(usersPage.getNumber())
+        .pageSize(usersPage.getSize())
+        .totalPages(usersPage.getTotalPages())
+        .lastOne(usersPage.isLast())
+        .totalElements(usersPage.getTotalElements())
+        .build();
+
+    return usersResponse;
+}
+
 
 }
