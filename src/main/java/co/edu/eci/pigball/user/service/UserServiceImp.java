@@ -34,14 +34,14 @@ public class UserServiceImp implements UserService {
     public UserResponseDTO createUser(CreateUserDTO userDTO) {
 
         userRepository.findById(userDTO.getId())
-            .ifPresent(u -> {
-                throw new DuplicateResourceException("User","Id" ,userDTO.getId());
-            });
+                .ifPresent(u -> {
+                    throw new DuplicateResourceException("User", "Id", userDTO.getId());
+                });
 
         userRepository.findByUsername(userDTO.getUsername())
-            .ifPresent(u -> {
-                throw new DuplicateResourceException("User","Username" ,userDTO.getUsername());
-            });
+                .ifPresent(u -> {
+                    throw new DuplicateResourceException("User", "Username", userDTO.getUsername());
+                });
 
         User user = User.builder()
                 .id(userDTO.getId())
@@ -87,28 +87,28 @@ public class UserServiceImp implements UserService {
     public UserResponseDTO getUserById(String userId) {
         return userRepository.findById(userId)
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "Id",userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
     }
 
-        // Obtener usuario por username
-        public UserResponseDTO getUserByUsername(String username) {
-            return userRepository.findByUsername(username)
-                    .map(this::convertToDTO)
-                    .orElseThrow(() -> new ResourceNotFoundException("User", "Username",username));
-        }
+    // Obtener usuario por username
+    public UserResponseDTO getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Username", username));
+    }
 
     // Actualizar todos los campos de un usuario
     public UserResponseDTO updateUser(String userId, UpdateUserDTO userDTO) {
 
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User","Id" ,userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
 
         // Actualiza solo los campos no nulos del DTO
         if (userDTO.getUsername() != null && !userDTO.getUsername().equals(existingUser.getUsername())) {
             userRepository.findByUsername(userDTO.getUsername())
-            .ifPresent(u -> {
-                throw new DuplicateResourceException("User","Username" ,userDTO.getUsername());
-            });
+                    .ifPresent(u -> {
+                        throw new DuplicateResourceException("User", "Username", userDTO.getUsername());
+                    });
             existingUser.setUsername(userDTO.getUsername());
         }
         Optional.ofNullable(userDTO.getImage()).ifPresent(existingUser::setImage);
@@ -124,7 +124,7 @@ public class UserServiceImp implements UserService {
     // Eliminar usuario por ID
     public void deleteUser(String userId) {
         userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "Id",userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
 
         userRepository.deleteById(userId);
     }
@@ -233,14 +233,14 @@ public class UserServiceImp implements UserService {
     }
 
     public UsersResponse findPotentialFriends(
-        String currentUserId, String searchTerm, int pageNumber, int pageSize, String sortBy, String sortDir) {
-    
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) 
-            ? Sort.by(sortBy).ascending() 
-            : Sort.by(sortBy).descending();
-        
+            String currentUserId, String searchTerm, int pageNumber, int pageSize, String sortBy, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
         PageRequest pageable = PageRequest.of(pageNumber, pageSize, sort);
-        
+
         Page<User> usersPage;
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
             usersPage = userRepository.findByUsernameContainingIgnoreCaseAndIdNot(
@@ -248,34 +248,36 @@ public class UserServiceImp implements UserService {
         } else {
             usersPage = userRepository.findByIdNot(currentUserId, pageable);
         }
-        
+
         List<UserResponseDTO> content = usersPage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-        
+
         UsersResponse usersResponse = UsersResponse.builder()
-            .users(content)
-            .pagesNo(usersPage.getNumber())
-            .pageSize(usersPage.getSize())
-            .totalPages(usersPage.getTotalPages())
-            .lastOne(usersPage.isLast())
-            .totalElements(usersPage.getTotalElements())
-            .build();
+                .users(content)
+                .pagesNo(usersPage.getNumber())
+                .pageSize(usersPage.getSize())
+                .totalPages(usersPage.getTotalPages())
+                .lastOne(usersPage.isLast())
+                .totalElements(usersPage.getTotalElements())
+                .build();
 
         return usersResponse;
     }
+
     @Transactional
     public FriendResponseDTO addFriend(String userId, String friendId) {
-        
+
         if (userId.equals(friendId)) {
-            throw new BlogAppException(HttpStatus.BAD_REQUEST, "You can't add yourself as a friend.");}
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "You can't add yourself as a friend.");
+        }
 
         List<User> users = userRepository.findByIdIn(List.of(userId, friendId));
         if (users.size() != 2) {
             String missingId = users.stream()
-                .map(User::getId)
-                .noneMatch(userId::equals) ? userId : friendId;
-            
+                    .map(User::getId)
+                    .noneMatch(userId::equals) ? userId : friendId;
+
             throw new ResourceNotFoundException("User", "id", missingId);
         }
 
@@ -283,31 +285,41 @@ public class UserServiceImp implements UserService {
         User friend = users.get(0).getId().equals(friendId) ? users.get(0) : users.get(1);
 
         if (user.getFriendsIds().contains(friendId)) {
-            throw new BlogAppException(HttpStatus.CONFLICT, String.format("You are already friends with %s", friend.getUsername()));
+            throw new BlogAppException(HttpStatus.CONFLICT,
+                    String.format("You are already friends with %s", friend.getUsername()));
         }
 
         user.addFriendId(friendId);
-        
+        friend.addFriendId(userId);
+
         User updatedUser = userRepository.save(user);
-        
+        userRepository.save(friend);
+
         return FriendResponseDTO.added(userId, friendId, updatedUser.getFriendsIds().size());
     }
 
+    @Transactional
     public FriendResponseDTO removeFriend(String userId, String friendId) {
         // Obtener el usuario actual
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
+        User friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", friendId));
+        
+
         // Comprobar si realmente es amigo
         if (!user.getFriendsIds().contains(friendId)) {
-            throw new BlogAppException(HttpStatus.CONFLICT, String.format("You are not friends with: ", friendId));
+            throw new BlogAppException(HttpStatus.CONFLICT, String.format("You are not friends with: %s", friendId));
         }
-
 
         // Eliminar amigo
         user.removeFriendId(friendId);
+        friend.removeFriendId(userId);
+        
 
         User updatedUser = userRepository.save(user);
+        userRepository.save(friend);
         
         // Guardar los cambios
         return FriendResponseDTO.removed(userId, friendId, updatedUser.getFriendsIds().size());
@@ -317,7 +329,7 @@ public class UserServiceImp implements UserService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-        
+
         return getAllUserSummaries(new ArrayList<>(user.getFriendsIds()));
     }
 
