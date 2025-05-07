@@ -2,11 +2,17 @@ package co.edu.eci.pigball.user.service;
 
 import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
+import co.edu.eci.pigball.user.dto.UserSummaryDTO;
+import co.edu.eci.pigball.user.dto.UsersResponse;
+import co.edu.eci.pigball.user.exception.DuplicateResourceException;
 import co.edu.eci.pigball.user.exception.ResourceNotFoundException;
 import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.repository.UserRepository;
@@ -23,9 +29,15 @@ public class UserServiceImp implements UserService {
     // Crear usuario
     public UserResponseDTO createUser(CreateUserDTO userDTO) {
 
-        if (userRepository.existsById(userDTO.getId())) {
-            throw new RuntimeException("El ID ya existe");
-        }
+        userRepository.findById(userDTO.getId())
+            .ifPresent(u -> {
+                throw new DuplicateResourceException("User","Id" ,userDTO.getId());
+            });
+
+        userRepository.findByUsername(userDTO.getUsername())
+            .ifPresent(u -> {
+                throw new DuplicateResourceException("User","Username" ,userDTO.getUsername());
+            });
 
         User user = User.builder()
                 .id(userDTO.getId())
@@ -45,7 +57,7 @@ public class UserServiceImp implements UserService {
     // Actualizar estadísticas (existente)
     public UserResponseDTO updateUserStats(String userId, int score, boolean isWinner) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
 
         user.addToTotalScore(score);
         user.updateBestScore(score);
@@ -71,43 +83,35 @@ public class UserServiceImp implements UserService {
     public UserResponseDTO getUserById(String userId) {
         return userRepository.findById(userId)
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id",userId));
     }
 
-    // Obtener usuario por username
-    public UserResponseDTO getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .map(this::convertToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", username));
-    }
+        // Obtener usuario por username
+        public UserResponseDTO getUserByUsername(String username) {
+            return userRepository.findByUsername(username)
+                    .map(this::convertToDTO)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "Username",username));
+        }
 
     // Actualizar todos los campos de un usuario
     public UserResponseDTO updateUser(String userId, UpdateUserDTO userDTO) {
+
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User","Id" ,userId));
 
         // Actualiza solo los campos no nulos del DTO
-        if (userDTO.getUsername() != null) {
+        if (userDTO.getUsername() != null && !userDTO.getUsername().equals(existingUser.getUsername())) {
+            userRepository.findByUsername(userDTO.getUsername())
+            .ifPresent(u -> {
+                throw new DuplicateResourceException("User","Username" ,userDTO.getUsername());
+            });
             existingUser.setUsername(userDTO.getUsername());
         }
-        if (userDTO.getImage() != null) {
-            existingUser.setImage(userDTO.getImage());
-        }
-        if (userDTO.getIconType() != null) {
-            existingUser.setIconType(userDTO.getIconType());
-        }
-        if (userDTO.getBorderColor() != null) {
-            existingUser.setBorderColor(userDTO.getBorderColor());
-        }
-        if (userDTO.getCenterColor() != null) {
-            existingUser.setCenterColor(userDTO.getCenterColor());
-        }
-        if (userDTO.getIconColor() != null) {
-            existingUser.setIconColor(userDTO.getIconColor());
-        }
-        if (userDTO.getIconType() != null) {
-            existingUser.setIconType(userDTO.getIconType());
-        }
+        Optional.ofNullable(userDTO.getImage()).ifPresent(existingUser::setImage);
+        Optional.ofNullable(userDTO.getIconType()).ifPresent(existingUser::setIconType);
+        Optional.ofNullable(userDTO.getBorderColor()).ifPresent(existingUser::setBorderColor);
+        Optional.ofNullable(userDTO.getCenterColor()).ifPresent(existingUser::setCenterColor);
+        Optional.ofNullable(userDTO.getIconColor()).ifPresent(existingUser::setIconColor);
 
         User updatedUser = userRepository.save(existingUser);
         return convertToDTO(updatedUser);
@@ -116,7 +120,7 @@ public class UserServiceImp implements UserService {
     // Eliminar usuario por ID
     public void deleteUser(String userId) {
         userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id",userId));
 
         userRepository.deleteById(userId);
     }
@@ -219,4 +223,43 @@ public class UserServiceImp implements UserService {
         }
         userRepository.saveAll(usersToUpdate);
     }
+
+    public List<UserSummaryDTO> getAllUserSummaries(List<String> ids) {
+        return userRepository.findAllUserSummaries(ids);
+    }
+
+    public UsersResponse findPotentialFriends(
+        String currentUserId, String searchTerm, int pageNumber, int pageSize, String sortBy, String sortDir) {
+    
+    Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) 
+        ? Sort.by(sortBy).ascending() 
+        : Sort.by(sortBy).descending();
+    
+    PageRequest pageable = PageRequest.of(pageNumber, pageSize, sort);
+    
+    Page<User> usersPage;
+    if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+        usersPage = userRepository.findByUsernameContainingIgnoreCaseAndIdNot(
+                searchTerm.trim(), currentUserId, pageable);
+    } else {
+        usersPage = userRepository.findByIdNot(currentUserId, pageable);
+    }
+    
+    List<UserResponseDTO> content = usersPage.getContent().stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+    
+    UsersResponse usersResponse = UsersResponse.builder()
+        .users(content)
+        .pagesNo(usersPage.getNumber())
+        .pageSize(usersPage.getSize())
+        .totalPages(usersPage.getTotalPages())
+        .lastOne(usersPage.isLast())
+        .totalElements(usersPage.getTotalElements())
+        .build();
+
+    return usersResponse;
+}
+
+
 }

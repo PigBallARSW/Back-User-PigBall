@@ -3,8 +3,11 @@ package co.edu.eci.pigball.user.controller;
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
+import co.edu.eci.pigball.user.dto.UserSummaryDTO;
+import co.edu.eci.pigball.user.dto.UsersResponse;
 import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import co.edu.eci.pigball.user.service.UserServiceImp;
+import co.edu.eci.pigball.user.utils.AppConstants;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -70,5 +73,26 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/summary")
+    public List<UserSummaryDTO> getUserSummaries(@RequestBody List<String> ids) {
+        return userService.getAllUserSummaries(ids);
+    }
+
+    @GetMapping("/potential-friends/{currentUserId}")
+    public ResponseEntity<UsersResponse> getPotentialFriends(
+            @PathVariable String currentUserId,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = AppConstants.PAGE_NUMBER_BY_DEFAULT) int pageNo,
+            @RequestParam(defaultValue = AppConstants.SIZE_PAGE_BY_DEFAULT) int pageSize,
+            @RequestParam(defaultValue = AppConstants.SORT_BY_DEFAULT) String sortBy,
+            @RequestParam(defaultValue = AppConstants.SORT_DIRECTION_BY_DEFAULT) String sortDir
+           ) {
+        
+        UsersResponse response = userService.findPotentialFriends(
+                currentUserId, search, pageNo, pageSize, sortBy, sortDir);
+                
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
