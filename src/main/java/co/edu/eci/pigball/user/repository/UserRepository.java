@@ -21,6 +21,7 @@ public interface UserRepository extends MongoRepository<User, String> {
         fields = "{ '_id': 1, 'username': 1, 'gamesWon': 1, 'image': 1, 'iconType': 1, 'borderColor': 1, 'centerColor': 1, 'iconColor': 1 }"
     )
     List<UserSummaryDTO> findAllUserSummaries(List<String> ids);
+    List<User> findByIdIn(List<String> ids);
     Page<User> findByIdNot(String userId, Pageable pageable);
     Page<User> findByUsernameContainingIgnoreCaseAndIdNot(String username, String userId, Pageable pageable);
 }

@@ -1,10 +1,12 @@
 package co.edu.eci.pigball.user.controller;
 
 import co.edu.eci.pigball.user.dto.CreateUserDTO;
+import co.edu.eci.pigball.user.dto.FriendResponseDTO;
 import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
 import co.edu.eci.pigball.user.dto.UserSummaryDTO;
 import co.edu.eci.pigball.user.dto.UsersResponse;
+import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import co.edu.eci.pigball.user.service.UserServiceImp;
 import co.edu.eci.pigball.user.utils.AppConstants;
@@ -95,4 +97,23 @@ public class UserController {
                 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/{userId}/friends")
+    public ResponseEntity<List<UserSummaryDTO>> getFriends(@PathVariable String userId) {
+        List<UserSummaryDTO> friends = userService.getFriendsList(userId);
+        return ResponseEntity.ok(friends);
+    }
+
+    @PostMapping("/{userId}/friends/{friendId}")
+    public ResponseEntity<FriendResponseDTO> addFriend(@PathVariable String userId, @PathVariable String friendId) {
+        return ResponseEntity.ok(userService.addFriend(userId, friendId));
+    }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public ResponseEntity<FriendResponseDTO> removeFriend(@PathVariable String userId, @PathVariable String friendId) {
+        return ResponseEntity.ok(userService.removeFriend(userId, friendId));
+
+    }
 }
+
+
