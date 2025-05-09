@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserRepository extends MongoRepository<User, String> {
     
@@ -18,10 +19,12 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query(
         value = "{ '_id': { '$in': ?0 } }",
-        fields = "{ '_id': 1, 'username': 1, 'gamesWon': 1, 'image': 1, 'iconType': 1, 'borderColor': 1, 'centerColor': 1, 'iconColor': 1 }"
+        fields = "{ '_id': 1, 'username': 1, 'gamesWon': 1, 'lostGames': 1, 'image': 1, 'iconType': 1, 'borderColor': 1, 'centerColor': 1, 'iconColor': 1 }"
     )
     List<UserSummaryDTO> findAllUserSummaries(List<String> ids);
     List<User> findByIdIn(List<String> ids);
-    Page<User> findByIdNot(String userId, Pageable pageable);
-    Page<User> findByUsernameContainingIgnoreCaseAndIdNot(String username, String userId, Pageable pageable);
+    Page<User> findByUsernameContainingIgnoreCaseAndIdNotIn(
+            String username, Set<String> excludedIds, Pageable pageable);
+
+    Page<User> findByIdNotIn(Set<String> excludedIds, Pageable pageable);
 }

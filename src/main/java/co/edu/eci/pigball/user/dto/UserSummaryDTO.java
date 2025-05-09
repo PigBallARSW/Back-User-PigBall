@@ -18,4 +18,5 @@ public class UserSummaryDTO {
     private String borderColor;
     private String centerColor; 
     private String iconColor;
+    private String lostGames;
 }

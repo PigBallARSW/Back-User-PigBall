@@ -241,19 +241,26 @@ public class UserServiceImp implements UserService {
 
         PageRequest pageable = PageRequest.of(pageNumber, pageSize, sort);
 
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        // IDs a excluir (usuario + amigos)
+        Set<String> excludedIds = new HashSet<>(currentUser.getFriendsIds());
+        excludedIds.add(currentUserId);
+
         Page<User> usersPage;
+
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-            usersPage = userRepository.findByUsernameContainingIgnoreCaseAndIdNot(
-                    searchTerm.trim(), currentUserId, pageable);
+            usersPage = userRepository.findByUsernameContainingIgnoreCaseAndIdNotIn(
+                    searchTerm.trim(), excludedIds, pageable);
         } else {
-            usersPage = userRepository.findByIdNot(currentUserId, pageable);
+            usersPage = userRepository.findByIdNotIn(excludedIds, pageable);
         }
 
         List<UserResponseDTO> content = usersPage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
-        UsersResponse usersResponse = UsersResponse.builder()
+        return UsersResponse.builder()
                 .users(content)
                 .pagesNo(usersPage.getNumber())
                 .pageSize(usersPage.getSize())
@@ -261,8 +268,6 @@ public class UserServiceImp implements UserService {
                 .lastOne(usersPage.isLast())
                 .totalElements(usersPage.getTotalElements())
                 .build();
-
-        return usersResponse;
     }
 
     @Transactional
@@ -325,12 +330,30 @@ public class UserServiceImp implements UserService {
         return FriendResponseDTO.removed(userId, friendId, updatedUser.getFriendsIds().size());
     }
 
-    public List<UserSummaryDTO> getFriendsList(String userId) {
-
-        User user = userRepository.findById(userId)
+    public UsersResponse getFriendsList(String userId) {
+        // 1) Obtén el usuario y sus IDs de amigos
+        User current = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        Set<String> friendIds = current.getFriendsIds();
 
-        return getAllUserSummaries(new ArrayList<>(user.getFriendsIds()));
+        // 2) Recupera los objetos User de la base (si quieres paginar, podrías usar un PageRequest aquí)
+        List<User> friends = userRepository.findAllById(friendIds);
+
+        // 3) Convierte cada User a tu DTO de respuesta
+        List<UserResponseDTO> content = friends.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        // 4) Empaqueta en un UsersResponse, simulando una sola “página”
+        return UsersResponse.builder()
+                .users(content)
+                .pagesNo(0)                           // primera y única página
+                .pageSize(content.size())             // tamaño de la página = número de amigos
+                .totalPages(1)                        // sólo 1
+                .lastOne(true)                        // es la última
+                .totalElements((long)content.size())        // total de elementos
+                .build();
     }
+
 
 }

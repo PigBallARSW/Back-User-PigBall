@@ -77,7 +77,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/summary")
+    @PostMapping("/summary")
     public List<UserSummaryDTO> getUserSummaries(@RequestBody List<String> ids) {
         return userService.getAllUserSummaries(ids);
     }
@@ -99,9 +99,9 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/friends")
-    public ResponseEntity<List<UserSummaryDTO>> getFriends(@PathVariable String userId) {
-        List<UserSummaryDTO> friends = userService.getFriendsList(userId);
-        return ResponseEntity.ok(friends);
+    public ResponseEntity<UsersResponse> getFriends(@PathVariable String userId) {
+        UsersResponse response = userService.getFriendsList(userId);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{userId}/friends/{friendId}")
