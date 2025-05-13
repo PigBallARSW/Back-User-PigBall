@@ -278,16 +278,15 @@ public class UserServiceImp implements UserService {
         }
 
         List<User> users = userRepository.findByIdIn(List.of(userId, friendId));
-        if (users.size() != 2) {
-            String missingId = users.stream()
-                    .map(User::getId)
-                    .noneMatch(userId::equals) ? userId : friendId;
+            User user = users.stream()
+                    .filter(u -> u.getId().equals(userId))
+                    .findFirst()
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-            throw new ResourceNotFoundException("User", "id", missingId);
-        }
-
-        User user = users.get(0).getId().equals(userId) ? users.get(0) : users.get(1);
-        User friend = users.get(0).getId().equals(friendId) ? users.get(0) : users.get(1);
+            User friend = users.stream()
+                    .filter(u -> u.getId().equals(friendId))
+                    .findFirst()
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", friendId));
 
         if (user.getFriendsIds().contains(friendId)) {
             throw new BlogAppException(HttpStatus.CONFLICT,
