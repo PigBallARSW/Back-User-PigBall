@@ -17,7 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {
+    "https://front-pig-ball.vercel.app",
+    "https://localhost:3000",
+    "http://localhost:3000",
+})
 @RestController
 @RequestMapping("/user")
 public class UserController {
