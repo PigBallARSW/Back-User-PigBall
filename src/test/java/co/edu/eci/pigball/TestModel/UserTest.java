@@ -79,7 +79,6 @@ public class UserTest {
         assertEquals(0.0, newUser.getWinningPercentage(), 0.001);
     }
 
-
     @Test
     public void testBuilderWithDefaults() {
         User defaultUser = User.builder().username("default").build();
@@ -110,9 +109,9 @@ public class UserTest {
     public void testRemoveNonExistentFriendId() {
         user.removeFriendId("99");
         assertEquals(2, user.getFriendsIds().size()); // ✅
-}
+    }
 
-   @Test
+    @Test
     void testHashCodeConsistency() {
         // Arrange
         User user1 = User.builder()
@@ -257,8 +256,7 @@ public class UserTest {
                 () -> assertTrue(result.contains("#FF0000")),
                 () -> assertTrue(result.contains("#00FF00")),
                 () -> assertTrue(result.contains("#0000FF")),
-                () -> assertTrue(result.contains("friendsIds"))
-        );
+                () -> assertTrue(result.contains("friendsIds")));
     }
 
     @Test
@@ -296,7 +294,304 @@ public class UserTest {
                 () -> assertEquals(expectedIconType, user.getIconType()),
                 () -> assertEquals(expectedCenterColor, user.getCenterColor()),
                 () -> assertEquals(expectedIconColor, user.getIconColor()),
-                () -> assertEquals(expectedFriendsIds, user.getFriendsIds())
-        );
+                () -> assertEquals(expectedFriendsIds, user.getFriendsIds()));
+    }
+
+    public void testAddExistingFriendId() {
+        user.addFriendId("2"); // Ya existe en el setup
+        assertEquals(2, user.getFriendsIds().size()); // Tamaño no cambia
+    }
+
+    // Pruebas para múltiples incrementos
+    @Test
+    public void testMultipleIncrementLostGames() {
+        user.incrementLostGames();
+        user.incrementLostGames();
+        assertEquals(4, user.getLostGames());
+    }
+
+    // Actualizar bestScore con mismo valor
+    @Test
+    public void testUpdateBestScoreWithSameScore() {
+        user.updateBestScore(50); // Mismo que el valor inicial
+        assertEquals(50, user.getBestScore());
+    }
+
+    // Prueba addToTotalScore con 0 puntos
+    @Test
+    public void testAddZeroToTotalScore() {
+        user.addToTotalScore(0);
+        assertEquals(100, user.getTotalScore());
+    }
+
+    // Prueba getWinningPercentage con 0 juegos ganados
+    @Test
+    public void testGetWinningPercentageWithZeroWins() {
+        User newUser = User.builder()
+                .lostGames(5)
+                .gamesWon(0)
+                .build();
+        assertEquals(0.0, newUser.getWinningPercentage(), 0.001);
+    }
+
+    // Prueba constructor sin builder
+    @Test
+    public void testNoArgsConstructor() {
+        User emptyUser = new User();
+        assertNotNull(emptyUser); // Asegura que se puede crear
+    }
+
+    // Prueba campos de colores en equals
+    @Test
+    void testEqualsWithDifferentBorderColor() {
+        User user1 = User.builder().id("1").borderColor("#000").build();
+        User user2 = User.builder().id("1").borderColor("#FFF").build();
+        assertNotEquals(user1, user2);
+    }
+
+    // Prueba para cubrir el branch faltante en removeFriendId (friendId = null):
+    @Test
+    public void testRemoveNullFriendId() {
+        user.removeFriendId(null);
+        assertEquals(2, user.getFriendsIds().size()); // No debe modificar el set
+        assertFalse(user.getFriendsIds().contains(null)); // Asegurar que no guarda nulls
+    }
+
+    // Mejorar cobertura de hashCode() y equals():
+    @Test
+    void testEqualsWithAllFieldsDifference() {
+        User user1 = User.builder()
+                .id("1")
+                .username("user1")
+                .lostGames(2)
+                .gamesWon(3)
+                .totalScore(100)
+                .bestScore(50)
+                .image("img1.jpg")
+                .iconType("star")
+                .borderColor("#000")
+                .centerColor("#FFF")
+                .iconColor("#CCC")
+                .friendsIds(Set.of("2"))
+                .build();
+
+        User user2 = User.builder()
+                .id("2") // Diferente ID
+                .username("user2")
+                .lostGames(5)
+                .gamesWon(1)
+                .totalScore(200)
+                .bestScore(100)
+                .image("img2.jpg")
+                .iconType("circle")
+                .borderColor("#FFF")
+                .centerColor("#000")
+                .iconColor("#999")
+                .friendsIds(Set.of("3"))
+                .build();
+
+        assertNotEquals(user1, user2);
+        assertNotEquals(user1.hashCode(), user2.hashCode());
+    }
+
+    @Test
+    void testEqualsWithOnlyIdDifference() {
+        User user1 = User.builder().id("1").build();
+        User user2 = User.builder().id("2").build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testHashCodeWithDifferentIconType() {
+        User user1 = User.builder().id("1").iconType("star").build();
+        User user2 = User.builder().id("1").iconType("circle").build();
+        assertNotEquals(user1.hashCode(), user2.hashCode());
+    }
+
+    // Pruebas para UserBuilder
+    @Test
+    void testBuilderToString() {
+        User.UserBuilder builder = User.builder()
+                .id("123")
+                .username("builderTest")
+                .image("builder.jpg");
+
+        String builderStr = builder.toString();
+        assertTrue(builderStr.contains("id=123"));
+        assertTrue(builderStr.contains("username=builderTest"));
+        assertTrue(builderStr.contains("image=builder.jpg"));
+    }
+
+    @Test
+    void testBuilderWithAllFields() {
+        User user = User.builder()
+                .id("full")
+                .username("fullUser")
+                .lostGames(1)
+                .gamesWon(2)
+                .totalScore(30)
+                .bestScore(20)
+                .image("full.jpg")
+                .iconType("fullIcon")
+                .borderColor("#111")
+                .centerColor("#222")
+                .iconColor("#333")
+                .friendsIds(Set.of("friend1"))
+                .build();
+
+        assertNotNull(user);
+        assertEquals("full", user.getId());
+        assertEquals("#111", user.getBorderColor());
+        assertTrue(user.getFriendsIds().contains("friend1"));
+    }
+
+    // pruebas para toString
+    @Test
+    void testToStringWithEmptyFields() {
+        User user = new User();
+        user.setId("empty");
+        String str = user.toString();
+
+        assertTrue(str.contains("id=empty"));
+        assertTrue(str.contains("lostGames=0")); // Valores por defecto
+        assertTrue(str.contains("friendsIds=[]")); // Set vacío
+    }
+
+    @Test
+    void testToStringWithSpecialCharacters() {
+        User user = User.builder()
+                .borderColor("#!@#")
+                .username("user@name")
+                .iconType("type/with/slashes")
+                .build();
+
+        String str = user.toString();
+        assertTrue(str.contains("#!@#"));
+        assertTrue(str.contains("user@name"));
+        assertTrue(str.contains("type/with/slashes"));
+    }
+
+    // prueba para toEquals
+    @Test
+    void testEqualsWithDifferentImage() {
+        User user1 = User.builder().id("1").image("img1").build();
+        User user2 = User.builder().id("1").image("img2").build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsWithDifferentBorderColor2() {
+        User user1 = User.builder().id("1").borderColor("#000").build();
+        User user2 = User.builder().id("1").borderColor("#FFF").build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsWithDifferentFriendsIds() {
+        User user1 = User.builder().id("1").friendsIds(Set.of("a")).build();
+        User user2 = User.builder().id("1").friendsIds(Set.of("b")).build();
+        assertNotEquals(user1, user2);
+    }
+
+    // edge case hashcode
+    @Test
+    void testHashCodeConsistencyAfterModification() {
+        User user = User.builder().id("1").build();
+        int initialHash = user.hashCode();
+
+        user.setUsername("newName");
+        assertNotEquals(initialHash, user.hashCode());
+    }
+
+    @Test
+    void testEqualsWithDifferentImage2() {
+        User user1 = User.builder().id("1").image("img1.jpg").build();
+        User user2 = User.builder().id("1").image("img2.jpg").build();
+        assertNotEquals(user1, user2, "Deben ser diferentes por la imagen");
+    }
+
+    @Test
+    void testEqualsWithNullImageVsNonNull() {
+        User user1 = User.builder().id("1").image(null).build();
+        User user2 = User.builder().id("1").image("img.jpg").build();
+        assertNotEquals(user1, user2, "Null vs no-null en imagen debe ser diferente");
+    }
+
+    @Test
+    void testEqualsWithDifferentIconType() {
+        User user1 = User.builder().id("1").iconType("star").build();
+        User user2 = User.builder().id("1").iconType("circle").build();
+        assertNotEquals(user1, user2, "Deben diferir por iconType");
+    }
+
+    @Test
+    void testEqualsWithDifferentBorderColor3() {
+        User user1 = User.builder().id("1").borderColor("#000").build();
+        User user2 = User.builder().id("1").borderColor("#FFF").build();
+        assertNotEquals(user1, user2, "borderColor diferente debe hacerlos distintos");
+    }
+
+    @Test
+    void testEqualsWithDifferentCenterColor() {
+        User user1 = User.builder().id("1").centerColor("#111").build();
+        User user2 = User.builder().id("1").centerColor("#222").build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsWithDifferentIconColor() {
+        User user1 = User.builder().id("1").iconColor("red").build();
+        User user2 = User.builder().id("1").iconColor("blue").build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsWithDifferentLostGames() {
+        User user1 = User.builder().id("1").lostGames(2).build();
+        User user2 = User.builder().id("1").lostGames(5).build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsWithDifferentTotalScore() {
+        User user1 = User.builder().id("1").totalScore(100).build();
+        User user2 = User.builder().id("1").totalScore(200).build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsWithDifferentFriendsIdsContent() {
+        User user1 = User.builder().id("1").friendsIds(Set.of("2")).build();
+        User user2 = User.builder().id("1").friendsIds(Set.of("3")).build();
+        assertNotEquals(user1, user2, "friendsIds diferentes deben hacerlos desiguales");
+    }
+
+    @Test
+    void testEqualsWithDifferentFriendsIdsOrder() {
+        // Los Set no tienen orden, pero se prueba igualación de contenido
+        User user1 = User.builder().id("1").friendsIds(Set.of("2", "3")).build();
+        User user2 = User.builder().id("1").friendsIds(Set.of("3", "2")).build();
+        assertEquals(user1, user2, "El orden en Sets no debe afectar igualdad");
+    }
+
+    @Test
+    void testEqualsWithNullFriendsIds() {
+        User user1 = User.builder().id("1").friendsIds(null).build();
+        User user2 = User.builder().id("1").build(); // friendsIds por defecto = empty
+        assertNotEquals(user1, user2, "null friendsIds vs empty debe ser diferente");
+    }
+
+    @Test
+    void testEqualsWithDifferentBestScore() {
+        User user1 = User.builder().id("1").bestScore(10).build();
+        User user2 = User.builder().id("1").bestScore(20).build();
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsWithPartialNulls() {
+        User user1 = User.builder().id("1").username(null).build();
+        User user2 = User.builder().id("1").username("notNull").build();
+        assertNotEquals(user1, user2, "username null vs no-null debe ser diferente");
     }
 }
