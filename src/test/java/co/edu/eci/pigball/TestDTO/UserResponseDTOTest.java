@@ -274,4 +274,188 @@ class UserResponseDTOTest {
             () -> assertTrue(result.contains("star"))
         );
     }
+
+    // Pruebas adicionales para equals()
+    @Test
+    void testEquals_SameInstance_ReturnsTrue() {
+        UserResponseDTO dto = UserResponseDTO.builder().id("123").build();
+        assertEquals(dto, dto);
+    }
+
+    @Test
+    void testEquals_NullComparison_ReturnsFalse() {
+        UserResponseDTO dto = UserResponseDTO.builder().username("test").build();
+        assertNotEquals(dto, null);
+    }
+
+    @Test
+    void testEquals_DifferentClass_ReturnsFalse() {
+        UserResponseDTO dto = UserResponseDTO.builder().build();
+        assertNotEquals(dto, "Not a UserResponseDTO");
+    }
+
+    @Test
+    void testEquals_AllFieldsNull_Equal() {
+        UserResponseDTO dto1 = new UserResponseDTO();
+        UserResponseDTO dto2 = new UserResponseDTO();
+        assertEquals(dto1, dto2);
+    }
+
+    // Pruebas por cada campo individual
+    @Test
+    void testEquals_DifferentId_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().id("1").build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().id("2").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentUsername_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().username("A").build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().username("B").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentGamesPlayed_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().gamesPlayed(5).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().gamesPlayed(10).build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentLostGames_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().lostGames(2).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().lostGames(5).build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentGamesWon_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().gamesWon(3).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().gamesWon(6).build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentTotalScore_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().totalScore(100).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().totalScore(200).build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentWinningPercentage_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().winningPercentage(60.0).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().winningPercentage(70.5).build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentBestScore_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().bestScore(300).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().bestScore(500).build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentImage_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().image("img1.jpg").build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().image("img2.jpg").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentBorderColor_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().borderColor("#000").build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().borderColor("#FFF").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentCenterColor_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().centerColor("#111").build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().centerColor("#222").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentIconColor_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().iconColor("red").build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().iconColor("blue").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_DifferentIconType_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().iconType("star").build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().iconType("circle").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    // Pruebas con valores null
+    @Test
+    void testEquals_NullVsNonNullFields_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().id(null).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().id("123").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testEquals_NullVsEmptyString_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().username(null).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().username("").build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    // Prueba combinando varios campos diferentes
+    @Test
+    void testEquals_MultipleDifferences_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder()
+            .id("1")
+            .gamesWon(5)
+            .bestScore(100)
+            .build();
+        
+        UserResponseDTO dto2 = UserResponseDTO.builder()
+            .id("1")
+            .gamesWon(5)
+            .bestScore(200)  // Solo este campo diferente
+            .build();
+        
+        assertNotEquals(dto1, dto2);
+    }
+
+    // Prueba para valores numéricos especiales
+    @Test
+    void testEquals_ZeroVsNegativeValues_NotEqual() {
+        UserResponseDTO dto1 = UserResponseDTO.builder().totalScore(0).build();
+        UserResponseDTO dto2 = UserResponseDTO.builder().totalScore(-1).build();
+        assertNotEquals(dto1, dto2);
+    }
+
+    @Test
+    void testBuilderToString() {
+        // Configurar valores en el builder
+        UserResponseDTO.UserResponseDTOBuilder builder = UserResponseDTO.builder()
+            .id("user123")
+            .username("proGamer")
+            .gamesPlayed(50)
+            .borderColor("#00FF00")
+            .iconType("diamond")
+            .bestScore(1000);
+
+        // Obtener representación String del builder
+        String builderToString = builder.toString();
+
+        // Verificar que los campos configurados están representados
+        assertAll(
+            () -> assertTrue(builderToString.contains("id=user123")),
+            () -> assertTrue(builderToString.contains("username=proGamer")),
+            () -> assertTrue(builderToString.contains("gamesPlayed=50")),
+            () -> assertTrue(builderToString.contains("borderColor=#00FF00")),
+            () -> assertTrue(builderToString.contains("iconType=diamond")),
+            () -> assertTrue(builderToString.contains("bestScore=1000"))
+        );
+    }
 }

@@ -12,6 +12,7 @@ import co.edu.eci.pigball.user.dto.CreateUserDTO;
 
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -191,19 +192,7 @@ public class CreateUserDTOTest {
     }
 
 
-    // @Test
-    // void testCanEqual() throws Exception {
-    //     CreateUserDTO dto = CreateUserDTO.builder()
-    //         .id("100").username("A").image("i.png")
-    //         .iconColor("#000000").borderColor("#111111").centerColor("#222222")
-    //         .iconType("dot").build();
-
-    //     // canEqual should return true for same type
-    //     assertTrue(dto.canEqual(CreateUserDTO.builder().build()));
-    //     // and false for other types
-    //     assertFalse(dto.canEqual(new Object()));
-    // }
- @Test
+    @Test
     void testEqualsAndHashCodeFullCoverage() {
         // Create three equivalent instances
         CreateUserDTO dto1 = CreateUserDTO.builder()
@@ -265,18 +254,39 @@ public class CreateUserDTOTest {
         assertTrue(toStr.contains("iconType=triangle"));
     }
 
-    // @Test
-    // void testCanEqualBehavior() {
-    //     CreateUserDTO dto = CreateUserDTO.builder()
-    //         .id("100").username("A").image("i.png")
-    //         .iconColor("#000000").borderColor("#111111").centerColor("#222222")
-    //         .iconType("dot").build();
+    @Test
+    void testCreateUserDTOBuilderToString() {
+        // Configurar valores en el builder
+        CreateUserDTO.CreateUserDTOBuilder builder = CreateUserDTO.builder()
+            .id("user123")
+            .username("testUser")
+            .image("profile.jpg")
+            .iconColor("#FFA500")
+            .borderColor("#00FF00")
+            .centerColor("#0000FF")
+            .iconType("shield");
 
-    //     // Same class => true
-    //     assertTrue(dto.canEqual(CreateUserDTO.builder().build()));
-    //     // Other class => false
-    //     assertFalse(dto.canEqual(new Object()));
-    // }
+        // Obtener representación String del builder
+        String builderString = builder.toString();
+
+        // Verificar que los campos configurados están presentes
+        assertAll(
+            () -> assertTrue(builderString.contains("id=user123"), 
+                "Debe mostrar el ID configurado"),
+            () -> assertTrue(builderString.contains("username=testUser"), 
+                "Debe contener el username"),
+            () -> assertTrue(builderString.contains("image=profile.jpg"), 
+                "Debe mostrar la imagen"),
+            () -> assertTrue(builderString.contains("iconColor=#FFA500"), 
+                "Debe incluir el color del icono"),
+            () -> assertTrue(builderString.contains("borderColor=#00FF00"), 
+                "Debe mostrar el color del borde"),
+            () -> assertTrue(builderString.contains("centerColor=#0000FF"), 
+                "Debe contener el color central"),
+            () -> assertTrue(builderString.contains("iconType=shield"), 
+                "Debe mostrar el tipo de icono")
+        );
+    }
 }
 
 

@@ -114,4 +114,165 @@ class ErrorDetailsTest {
                 () -> assertTrue(toStringResult.contains("trace1")),
                 () -> assertTrue(toStringResult.contains(timestamp.toString())));
     }
+
+    // Pruebas adicionales para equals()
+        @Test
+        void testEquals_SameInstance_ReturnsTrue() {
+        ErrorDetails error = ErrorDetails.builder().message("Error").build();
+        assertEquals(error, error);
+        }
+
+        @Test
+        void testEquals_NullComparison_ReturnsFalse() {
+        ErrorDetails error = ErrorDetails.builder().details("Details").build();
+        assertNotEquals(null, error);
+        }
+
+        @Test
+        void testEquals_DifferentClass_ReturnsFalse() {
+        ErrorDetails error = ErrorDetails.builder().build();
+        assertNotEquals(error, "Not an ErrorDetails object");
+        }
+
+        @Test
+        void testEquals_DifferentTimestamp_NotEqual() {
+        Date now = new Date();
+        Date later = new Date(now.getTime() + 1000);
+        
+        ErrorDetails error1 = ErrorDetails.builder().timestamp(now).build();
+        ErrorDetails error2 = ErrorDetails.builder().timestamp(later).build();
+        
+        assertNotEquals(error1, error2);
+        }
+
+        @Test
+        void testEquals_DifferentMessage_NotEqual() {
+        ErrorDetails error1 = ErrorDetails.builder().message("Error 1").build();
+        ErrorDetails error2 = ErrorDetails.builder().message("Error 2").build();
+        
+        assertNotEquals(error1, error2);
+        }
+
+        @Test
+        void testEquals_DifferentDetails_NotEqual() {
+        ErrorDetails error1 = ErrorDetails.builder().details("Detail 1").build();
+        ErrorDetails error2 = ErrorDetails.builder().details("Detail 2").build();
+        
+        assertNotEquals(error1, error2);
+        }
+
+        @Test
+        void testEquals_DifferentStackTrace_NotEqual() {
+        List<String> trace1 = Arrays.asList("trace1", "trace2");
+        List<String> trace2 = Arrays.asList("trace3", "trace4");
+        
+        ErrorDetails error1 = ErrorDetails.builder().StackTrace(trace1).build();
+        ErrorDetails error2 = ErrorDetails.builder().StackTrace(trace2).build();
+        
+        assertNotEquals(error1, error2);
+        }
+
+        @Test
+        void testEquals_NullVsNonNullFields_NotEqual() {
+        ErrorDetails error1 = ErrorDetails.builder().message(null).build();
+        ErrorDetails error2 = ErrorDetails.builder().message("Exists").build();
+        
+        assertNotEquals(error1, error2);
+        }
+
+        @Test
+        void testEquals_SameDateDifferentInstance_Equal() {
+        Date date = new Date();
+        ErrorDetails error1 = ErrorDetails.builder().timestamp(date).build();
+        ErrorDetails error2 = ErrorDetails.builder().timestamp(new Date(date.getTime())).build();
+        
+        assertEquals(error1, error2);
+        }
+
+        // Pruebas para hashCode()
+        @Test
+        void testHashCode_Consistency_ShouldMatch() {
+        ErrorDetails error = ErrorDetails.builder()
+                .message("Consistency test")
+                .StackTrace(Arrays.asList("trace"))
+                .build();
+        
+        int initialHash = error.hashCode();
+        assertEquals(initialHash, error.hashCode());
+        }
+
+        @Test
+        void testHashCode_WithNullFields_DoesNotThrow() {
+        ErrorDetails error = ErrorDetails.builder()
+                .timestamp(null)
+                .message(null)
+                .details(null)
+                .StackTrace(null)
+                .build();
+        
+        assertDoesNotThrow(error::hashCode);
+        }
+
+        @Test
+        void testHashCode_DifferentStackTrace_DifferentHash() {
+        List<String> trace1 = Arrays.asList("line1");
+        List<String> trace2 = Arrays.asList("line2");
+        
+        ErrorDetails error1 = ErrorDetails.builder().StackTrace(trace1).build();
+        ErrorDetails error2 = ErrorDetails.builder().StackTrace(trace2).build();
+        
+        assertNotEquals(error1.hashCode(), error2.hashCode());
+        }
+
+        @Test
+        void testEquals_AllNullFields_Equal() {
+        ErrorDetails error1 = ErrorDetails.builder().build();
+        ErrorDetails error2 = ErrorDetails.builder().build();
+        
+        assertEquals(error1, error2);
+        assertEquals(error1.hashCode(), error2.hashCode());
+        }
+
+        @Test
+        void testEquals_OnlyOneFieldDifferent_NotEqual() {
+        // Objeto base
+        ErrorDetails base = ErrorDetails.builder()
+                .timestamp(new Date())
+                .message("Base")
+                .details("Details")
+                .StackTrace(Arrays.asList("trace"))
+                .build();
+
+        // Objeto con solo un campo diferente
+        ErrorDetails modified = ErrorDetails.builder()
+                .timestamp(base.getTimestamp())
+                .message("Modified") // Único cambio
+                .details(base.getDetails())
+                .StackTrace(base.getStackTrace())
+                .build();
+
+        assertNotEquals(base, modified);
+        }
+
+        @Test
+        void testErrorDetailsBuilderToString() {
+        // Configurar valores en el builder
+        Date testDate = new Date();
+        ErrorDetails.ErrorDetailsBuilder builder = ErrorDetails.builder()
+                .timestamp(testDate)
+                .message("Error de prueba")
+                .details("Detalles técnicos")
+                .StackTrace(List.of("StackTraceLine1", "StackTraceLine2"));
+
+        // Obtener representación String del builder
+        String builderString = builder.toString();
+
+        // Verificar que los campos configurados están presentes
+        assertAll(
+                () -> assertTrue(builderString.contains("timestamp=" + testDate), "Debe mostrar la fecha"),
+                () -> assertTrue(builderString.contains("message=Error de prueba"), "Debe contener el mensaje"),
+                () -> assertTrue(builderString.contains("details=Detalles técnicos"), "Debe mostrar detalles"),
+                () -> assertTrue(builderString.contains("StackTrace=[StackTraceLine1, StackTraceLine2]"), "Debe mostrar stacktrace")
+        );
+        }
 }

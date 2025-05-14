@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class UpdateUserDTO {
     @Nullable
     @Size(min = 3, max = 30, message = "The username must be between 3 and 30 characters long.")
-    @Pattern(regexp = "^(?!\\s)(?!.*\\s$)(?!.*\\s{2})\\S+( \\S+)*$", message = "The username cannot have spaces at the beginning, at the end, or consecutive spaces.")
+    @Pattern(regexp = "^(?!\\s)(?!.*\\s$)(?!.*\\s{2})\\S+(?> \\S+)*$", message = "The username cannot have spaces at the beginning, at the end, or consecutive spaces.")
     private String username;
     private String image;
 

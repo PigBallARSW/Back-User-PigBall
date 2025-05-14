@@ -22,7 +22,7 @@ public class CreateUserDTO {
     @NotBlank(message = "The username is required.")
     @Size(min = 3, max = 30, message = "The username must be between 3 and 30 characters long.")
     @Pattern(
-        regexp = "^(?!\\s)(?!.*\\s$)(?!.*\\s{2})\\S+( \\S+)*$",
+        regexp = "^(?!\\s)(?!.*\\s$)(?!.*\\s{2})\\S+(?> \\S+)*$",
         message = "The username cannot have spaces at the beginning, at the end, or consecutive spaces."
     )
     private String username;

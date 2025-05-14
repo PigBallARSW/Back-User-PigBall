@@ -259,4 +259,6 @@ class UpdateUserDTOTest {
         Set<ConstraintViolation<UpdateUserDTO>> violations3 = validator.validate(invalidDto3);
         assertEquals(1, violations3.size());
     }
+    
+
 }
