@@ -27,8 +27,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImp implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserServiceImp(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     // Crear usuario
     public UserResponseDTO createUser(CreateUserDTO userDTO) {
@@ -80,7 +83,7 @@ public class UserServiceImp implements UserService {
         return userRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // Obtener usuario por ID
@@ -195,7 +198,6 @@ public class UserServiceImp implements UserService {
         int goalsTeam0 = teamGoals.get(0);
         int goalsTeam1 = teamGoals.get(1);
 
-        String result;
         if (goalsTeam0 > goalsTeam1) {
 
             updateGameStats(request, 0, true); // Team 0 ganó
@@ -258,7 +260,7 @@ public class UserServiceImp implements UserService {
 
         List<UserResponseDTO> content = usersPage.getContent().stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         return UsersResponse.builder()
                 .users(content)
@@ -341,7 +343,7 @@ public class UserServiceImp implements UserService {
         // 3) Convierte cada User a tu DTO de respuesta
         List<UserResponseDTO> content = friends.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         // 4) Empaqueta en un UsersResponse, simulando una sola “página”
         return UsersResponse.builder()

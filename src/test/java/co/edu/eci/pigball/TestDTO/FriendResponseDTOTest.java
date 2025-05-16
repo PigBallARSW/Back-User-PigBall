@@ -192,7 +192,7 @@ class FriendResponseDTOTest {
         @Test
         void testEquals_DifferentClass_ReturnsFalse() {
                 FriendResponseDTO dto = FriendResponseDTO.builder().build();
-                assertNotEquals(dto, "Not a FriendResponseDTO");
+                assertNotEquals( "Not a FriendResponseDTO",dto);
         }
 
         @Test

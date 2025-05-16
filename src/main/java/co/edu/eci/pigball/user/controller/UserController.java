@@ -6,7 +6,6 @@ import co.edu.eci.pigball.user.dto.UpdateUserDTO;
 import co.edu.eci.pigball.user.dto.UserResponseDTO;
 import co.edu.eci.pigball.user.dto.UserSummaryDTO;
 import co.edu.eci.pigball.user.dto.UsersResponse;
-import co.edu.eci.pigball.user.model.User;
 import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
 import co.edu.eci.pigball.user.service.UserServiceImp;
 import co.edu.eci.pigball.user.utils.AppConstants;
@@ -70,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
     @PutMapping("/stats")
-    public ResponseEntity<?> updateStats(@Valid @RequestBody UpdateStatsRequest statsRequest) {
+    public ResponseEntity<String> updateStats(@Valid @RequestBody UpdateStatsRequest statsRequest) {
         return ResponseEntity.ok(userService.updateStats(statsRequest));
     }
 

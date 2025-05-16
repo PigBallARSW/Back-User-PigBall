@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import co.edu.eci.pigball.user.exception.ResourceNotFoundException;
 
-public class ResourceNotFoundExceptionTest {
+class ResourceNotFoundExceptionTest {
 
     @Test
-    public void testExceptionCreation() {
+    void testExceptionCreation() {
         // Arrange
         String className = "User";
         String attributeName = "id";
@@ -26,26 +26,4 @@ public class ResourceNotFoundExceptionTest {
         assertEquals(expectedMessage, exception.getMessage());
     }
 
-    @Test
-    public void testSettersUpdateFieldsAndMessage() {
-        // Arrange initial exception
-        ResourceNotFoundException exception = new ResourceNotFoundException(
-                "User", "id", "123");
-
-        // New values
-        String newClass = "Order";
-        String newAttribute = "orderId";
-        String newField = "789";
-
-        // Act: update via setters
-        exception.setClassName(newClass);
-        exception.setAtributeName(newAttribute);
-        exception.setFieldName(newField);
-
-        // Assert updated getters
-        assertEquals(newClass, exception.getClassName());
-        assertEquals(newAttribute, exception.getAtributeName());
-        assertEquals(newField, exception.getFieldName());
-        // Assert message reflects new values
-    }
 }

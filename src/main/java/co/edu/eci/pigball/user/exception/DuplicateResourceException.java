@@ -1,15 +1,13 @@
 package co.edu.eci.pigball.user.exception;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class DuplicateResourceException extends RuntimeException{
     
-    private String className;
-    private String atributeName;
-    private String fieldName;
+    private final String className;
+    private final String atributeName;
+    private final String fieldName;
     
 
     public DuplicateResourceException(String className, String atributeName, String fieldName) {

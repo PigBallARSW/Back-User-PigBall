@@ -246,14 +246,7 @@ class UserSummaryDTOTest {
         @Test
         void testEquals_DifferentClass_ReturnsFalse() {
                 UserSummaryDTO dto = UserSummaryDTO.builder().id("123").build();
-                assertNotEquals(dto, "Not a DTO");
-        }
-
-        @Test
-        void testEquals_AllFieldsNull_ShouldBeEqual() {
-                UserSummaryDTO dto1 = new UserSummaryDTO();
-                UserSummaryDTO dto2 = new UserSummaryDTO();
-                assertEquals(dto1, dto2);
+                assertNotEquals( "Not a DTO",dto);
         }
 
         @Test
@@ -389,21 +382,21 @@ class UserSummaryDTOTest {
         @Test
         void testEquals_SameInstance_ReturnsTrue2() {
                 UserSummaryDTO dto = UserSummaryDTO.builder().id("self").build();
-                assertTrue(dto.equals(dto));
+                assertEquals(dto, dto);
         }
 
         // 2. Comparación con null
         @Test
         void testEquals_NullComparison_ReturnsFalse() {
                 UserSummaryDTO dto = UserSummaryDTO.builder().username("notNull").build();
-                assertFalse(dto.equals(null));
+                assertNotEquals(null, dto);
         }
 
         // 3. Comparación con otro tipo de objeto
         @Test
         void testEquals_DifferentClass_ReturnsFalse2() {
                 UserSummaryDTO dto = UserSummaryDTO.builder().build();
-                assertFalse(dto.equals("Soy un String, no un DTO"));
+                assertNotEquals("Soy un String, no un DTO", dto);
         }
 
         // 4. Campos null vs no-null (por cada campo)

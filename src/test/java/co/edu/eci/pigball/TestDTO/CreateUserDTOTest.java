@@ -14,23 +14,22 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CreateUserDTOTest {
+class CreateUserDTOTest {
 
     private static ValidatorFactory factory;
     private static Validator validator;
 
     @BeforeAll
-    public static void setUpValidator() {
+    static void setUpValidator() {
         factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
 
     @AfterAll
-    public static void closeValidator() {
+    static void closeValidator() {
         factory.close();
     }
 
@@ -163,64 +162,63 @@ public class CreateUserDTOTest {
     @Test
     void testEqualsAndHashCode() {
         CreateUserDTO dto1 = CreateUserDTO.builder()
-            .id("1").username("User").image("img.png")
-            .iconColor("#FFFFFF").borderColor("#000000").centerColor("#112233")
-            .iconType("square").build();
+                .id("1").username("User").image("img.png")
+                .iconColor("#FFFFFF").borderColor("#000000").centerColor("#112233")
+                .iconType("square").build();
         CreateUserDTO dto2 = CreateUserDTO.builder()
-            .id("1").username("User").image("img.png")
-            .iconColor("#FFFFFF").borderColor("#000000").centerColor("#112233")
-            .iconType("square").build();
+                .id("1").username("User").image("img.png")
+                .iconColor("#FFFFFF").borderColor("#000000").centerColor("#112233")
+                .iconType("square").build();
 
         // reflexive
-        assertTrue(dto1.equals(dto1));
+        assertEquals(dto1, dto1);
         // symmetric
-        assertTrue(dto1.equals(dto2));
-        assertTrue(dto2.equals(dto1));
+        assertEquals(dto1, dto2);
+        assertEquals(dto2, dto1);
         // consistent hashCode
         assertEquals(dto1.hashCode(), dto2.hashCode());
 
         // inequality
         CreateUserDTO dto3 = CreateUserDTO.builder().id("2").username("User")
-            .image("img.png").iconColor("#FFFFFF").borderColor("#000000")
-            .centerColor("#112233").iconType("square").build();
-        assertFalse(dto1.equals(dto3));
+                .image("img.png").iconColor("#FFFFFF").borderColor("#000000")
+                .centerColor("#112233").iconType("square").build();
+        assertNotEquals(dto1, dto3);
         assertNotEquals(dto1.hashCode(), dto3.hashCode());
 
         // null and different class
-        assertFalse(dto1.equals(null));
-        assertFalse(dto1.equals("some string"));
+        assertNotEquals(dto1, null);
+        assertNotEquals(dto1, "some string");
     }
-
 
     @Test
     void testEqualsAndHashCodeFullCoverage() {
         // Create three equivalent instances
         CreateUserDTO dto1 = CreateUserDTO.builder()
-            .id("A").username("User").image("img.png")
-            .iconColor("#111111").borderColor("#222222").centerColor("#333333")
-            .iconType("circle").build();
+                .id("A").username("User").image("img.png")
+                .iconColor("#111111").borderColor("#222222").centerColor("#333333")
+                .iconType("circle").build();
         CreateUserDTO dto2 = CreateUserDTO.builder()
-            .id("A").username("User").image("img.png")
-            .iconColor("#111111").borderColor("#222222").centerColor("#333333")
-            .iconType("circle").build();
+                .id("A").username("User").image("img.png")
+                .iconColor("#111111").borderColor("#222222").centerColor("#333333")
+                .iconType("circle").build();
         CreateUserDTO dto3 = CreateUserDTO.builder()
-            .id("A").username("User").image("img.png")
-            .iconColor("#111111").borderColor("#222222").centerColor("#333333")
-            .iconType("circle").build();
+                .id("A").username("User").image("img.png")
+                .iconColor("#111111").borderColor("#222222").centerColor("#333333")
+                .iconType("circle").build();
 
         // Reflexive
-        assertTrue(dto1.equals(dto1));
+        assertEquals(dto1, dto1);
         // Symmetric
         assertEquals(dto1.equals(dto2), dto2.equals(dto1));
-        assertTrue(dto2.equals(dto1));
+        assertEquals(dto2, dto1);
         // Transitive
         if (dto1.equals(dto2) && dto2.equals(dto3)) {
-            assertTrue(dto1.equals(dto3));
+
+            assertEquals(dto1, dto3);
         }
         // Consistent
-        assertTrue(dto1.equals(dto2));
-        assertTrue(dto1.equals(dto2));
-
+        assertEquals(dto1, dto2);
+        assertEquals(dto1, dto2);
         // HashCode consistency
         int hash1 = dto1.hashCode();
         assertEquals(hash1, dto1.hashCode());
@@ -229,23 +227,24 @@ public class CreateUserDTOTest {
 
         // Inequality with different field values
         CreateUserDTO diff = CreateUserDTO.builder()
-            .id("B").username("User").image("img.png")
-            .iconColor("#111111").borderColor("#222222").centerColor("#333333")
-            .iconType("circle").build();
-        assertFalse(dto1.equals(diff));
+                .id("B").username("User").image("img.png")
+                .iconColor("#111111").borderColor("#222222").centerColor("#333333")
+                .iconType("circle").build();
+        assertNotEquals(dto1, diff);
         assertNotEquals(dto1.hashCode(), diff.hashCode());
 
         // Null and different class
-        assertFalse(dto1.equals(null));
-        assertFalse(dto1.equals("string"));
+
+        assertNotEquals(dto1, null);
+        assertNotEquals(dto1, "string");
     }
 
     @Test
     void testToStringContainsFields() {
         CreateUserDTO dto = CreateUserDTO.builder()
-            .id("42").username("Name").image("img.png")
-            .iconColor("#ABCDEF").borderColor("#123456").centerColor("#654321")
-            .iconType("triangle").build();
+                .id("42").username("Name").image("img.png")
+                .iconColor("#ABCDEF").borderColor("#123456").centerColor("#654321")
+                .iconType("triangle").build();
 
         String toStr = dto.toString();
         assertTrue(toStr.contains("id=42"));
@@ -258,35 +257,32 @@ public class CreateUserDTOTest {
     void testCreateUserDTOBuilderToString() {
         // Configurar valores en el builder
         CreateUserDTO.CreateUserDTOBuilder builder = CreateUserDTO.builder()
-            .id("user123")
-            .username("testUser")
-            .image("profile.jpg")
-            .iconColor("#FFA500")
-            .borderColor("#00FF00")
-            .centerColor("#0000FF")
-            .iconType("shield");
+                .id("user123")
+                .username("testUser")
+                .image("profile.jpg")
+                .iconColor("#FFA500")
+                .borderColor("#00FF00")
+                .centerColor("#0000FF")
+                .iconType("shield");
 
         // Obtener representación String del builder
         String builderString = builder.toString();
 
         // Verificar que los campos configurados están presentes
         assertAll(
-            () -> assertTrue(builderString.contains("id=user123"), 
-                "Debe mostrar el ID configurado"),
-            () -> assertTrue(builderString.contains("username=testUser"), 
-                "Debe contener el username"),
-            () -> assertTrue(builderString.contains("image=profile.jpg"), 
-                "Debe mostrar la imagen"),
-            () -> assertTrue(builderString.contains("iconColor=#FFA500"), 
-                "Debe incluir el color del icono"),
-            () -> assertTrue(builderString.contains("borderColor=#00FF00"), 
-                "Debe mostrar el color del borde"),
-            () -> assertTrue(builderString.contains("centerColor=#0000FF"), 
-                "Debe contener el color central"),
-            () -> assertTrue(builderString.contains("iconType=shield"), 
-                "Debe mostrar el tipo de icono")
-        );
+                () -> assertTrue(builderString.contains("id=user123"),
+                        "Debe mostrar el ID configurado"),
+                () -> assertTrue(builderString.contains("username=testUser"),
+                        "Debe contener el username"),
+                () -> assertTrue(builderString.contains("image=profile.jpg"),
+                        "Debe mostrar la imagen"),
+                () -> assertTrue(builderString.contains("iconColor=#FFA500"),
+                        "Debe incluir el color del icono"),
+                () -> assertTrue(builderString.contains("borderColor=#00FF00"),
+                        "Debe mostrar el color del borde"),
+                () -> assertTrue(builderString.contains("centerColor=#0000FF"),
+                        "Debe contener el color central"),
+                () -> assertTrue(builderString.contains("iconType=shield"),
+                        "Debe mostrar el tipo de icono"));
     }
 }
-
-

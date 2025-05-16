@@ -24,7 +24,7 @@ import co.edu.eci.pigball.user.repository.UserRepository;
 import co.edu.eci.pigball.user.service.UserServiceImp;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImpTest {
+class UserServiceImpTest {
 
     @Mock
     private UserRepository userRepository;
@@ -34,7 +34,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para createUser -------------------------
     @Test
-    public void testCreateUser_DuplicateId() {
+    void testCreateUser_DuplicateId() {
         // Arrange
         CreateUserDTO dto = new CreateUserDTO("1", "jag", "img.png", "typeA", "#FFF", "#000", "#F00");
         when(userRepository.findById("1")).thenReturn(Optional.of(new User()));
@@ -44,7 +44,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testCreateUser_Success() {
+    void testCreateUser_Success() {
         // Arrange
         CreateUserDTO dto = new CreateUserDTO("1", "jag", "img.png", "typeA", "#FFF", "#000", "#F00");
         when(userRepository.findById(any())).thenReturn(Optional.empty());
@@ -61,14 +61,14 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para updateUserStats -------------------------
     @Test
-    public void testUpdateUserStats_UserNotFound() {
+    void testUpdateUserStats_UserNotFound() {
         when(userRepository.findById("1")).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class,
                 () -> userService.updateUserStats("1", 100, true));
     }
 
     @Test
-    public void testUpdateUserStats_Success() {
+    void testUpdateUserStats_Success() {
         // Arrange
         User user = User.builder().id("1").totalScore(0).bestScore(0).build();
         when(userRepository.findById("1")).thenReturn(Optional.of(user));
@@ -85,7 +85,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para updateStats -------------------------
     @Test
-    public void testUpdateStats_GoalScored() {
+    void testUpdateStats_GoalScored() {
         // Arrange
         UpdateStatsRequest request = new UpdateStatsRequest();
         request.setStats(List.of(new Stat("player1", "GOAL_SCORED")));
@@ -106,13 +106,13 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para addFriend -------------------------
     @Test
-    public void testAddFriend_SelfAddition() {
+    void testAddFriend_SelfAddition() {
         assertThrows(BlogAppException.class,
                 () -> userService.addFriend("1", "1"));
     }
 
     @Test
-    public void testAddFriend_Success() {
+    void testAddFriend_Success() {
         // Arrange
         User user = User.builder().id("1").friendsIds(new HashSet<>()).build();
         User friend = User.builder().id("2").friendsIds(new HashSet<>()).build();
@@ -130,7 +130,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para removeFriend -------------------------
     @Test
-    public void testRemoveFriend_NotFriends() {
+    void testRemoveFriend_NotFriends() {
         // Arrange
         User user = User.builder()
                 .id("1")
@@ -157,7 +157,7 @@ public class UserServiceImpTest {
     // ------------------------- Test para findPotentialFriends
     // -------------------------
     @Test
-    public void testFindPotentialFriends_WithSearchTerm() {
+    void testFindPotentialFriends_WithSearchTerm() {
         // Arrange
         User currentUser = User.builder()
                 .id("1")
@@ -190,7 +190,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para getFriendsList -------------------------
     @Test
-    public void testGetFriendsList_NoFriends() {
+    void testGetFriendsList_NoFriends() {
         User user = User.builder().id("1").friendsIds(Collections.emptySet()).build();
         when(userRepository.findById("1")).thenReturn(Optional.of(user));
 
@@ -201,7 +201,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para getAllUsers -------------------------
     @Test
-    public void testGetAllUsers_EmptyList() {
+    void testGetAllUsers_EmptyList() {
         when(userRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<UserResponseDTO> result = userService.getAllUsers();
@@ -211,7 +211,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testGetAllUsers_WithUsers() {
+    void testGetAllUsers_WithUsers() {
         // Arrange
         List<User> users = Arrays.asList(
                 User.builder().id("1").username("user1").build(),
@@ -229,7 +229,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para getUserById -------------------------
     @Test
-    public void testGetUserById_NotFound() {
+    void testGetUserById_NotFound() {
         when(userRepository.findById("1")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -238,7 +238,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testGetUserById_Success() {
+    void testGetUserById_Success() {
         // Arrange
         User user = User.builder().id("1").username("testUser").build();
         when(userRepository.findById("1")).thenReturn(Optional.of(user));
@@ -254,7 +254,7 @@ public class UserServiceImpTest {
     // ------------------------- Test para getUserByUsername
     // -------------------------
     @Test
-    public void testGetUserByUsername_NotFound() {
+    void testGetUserByUsername_NotFound() {
         when(userRepository.findByUsername("unknown")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -263,7 +263,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testGetUserByUsername_Success() {
+    void testGetUserByUsername_Success() {
         // Arrange
         User user = User.builder().username("existingUser").build();
         when(userRepository.findByUsername("existingUser")).thenReturn(Optional.of(user));
@@ -278,7 +278,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para updateUser -------------------------
     @Test
-    public void testUpdateUser_NotFound() {
+    void testUpdateUser_NotFound() {
         when(userRepository.findById("1")).thenReturn(Optional.empty());
 
         UpdateUserDTO dto = new UpdateUserDTO();
@@ -288,7 +288,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testUpdateUser_DuplicateUsername() {
+    void testUpdateUser_DuplicateUsername() {
         // Arrange
         User existingUser = User.builder()
                 .id("1")
@@ -313,7 +313,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testUpdateUser_Success() {
+    void testUpdateUser_Success() {
         // Arrange
         User existingUser = User.builder()
                 .id("1")
@@ -342,7 +342,7 @@ public class UserServiceImpTest {
 
     // ------------------------- Test para deleteUser -------------------------
     @Test
-    public void testDeleteUser_NotFound() {
+    void testDeleteUser_NotFound() {
         when(userRepository.findById("1")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -352,7 +352,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testDeleteUser_Success() {
+    void testDeleteUser_Success() {
         // Arrange
         User user = User.builder().id("1").build();
         when(userRepository.findById("1")).thenReturn(Optional.of(user));
@@ -366,7 +366,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testAddFriend_AlreadyFriends() {
+    void testAddFriend_AlreadyFriends() {
         // Arrange - Ambos usuarios son amigos
         User user = User.builder()
                 .id("1")
@@ -388,59 +388,8 @@ public class UserServiceImpTest {
         assertTrue(exception.getMessage().contains("already friends with amigo"));
     }
 
-    // @Test
-    // public void testAddFriend_UserOrderInResponse() {
-    // // Arrange - Verificar orden de usuarios en la respuesta
-    // User user1 = User.builder().id("1").friendsIds(new HashSet<>()).build();
-    // User user2 = User.builder().id("2").friendsIds(new HashSet<>()).build();
-
-    // // Caso 1: Repositorio devuelve [user1, user2]
-    // when(userRepository.findByIdIn(List.of("1", "2"))).thenReturn(List.of(user1,
-    // user2));
-    // userService.addFriend("1", "2");
-    // assertEquals(1, user1.getFriendsIds().size()); // Verifica que user1 fue
-    // actualizado
-
-    // // Caso 2: Repositorio devuelve [user2, user1]
-    // user1.getFriendsIds().clear();
-    // user2.getFriendsIds().clear();
-    // when(userRepository.findByIdIn(List.of("1", "2"))).thenReturn(List.of(user2,
-    // user1));
-    // userService.addFriend("1", "2");
-    // assertEquals(1, user1.getFriendsIds().size()); // Verifica que user1 fue
-    // actualizado
-    // }
-    // @Test
-    // public void testAddFriend_MissingUserId() {
-    // // Arrange - Solo el friend existe
-    // User friend = User.builder().id("2").username("friend").build();
-    // when(userRepository.findByIdIn(List.of("1",
-    // "2"))).thenReturn(List.of(friend));
-
-    // // Act & Assert
-    // ResourceNotFoundException exception =
-    // assertThrows(ResourceNotFoundException.class,
-    // () -> userService.addFriend("1", "2"));
-
-    // assertEquals("User not found with id : 1", exception.getMessage());
-    // }
-
-    // @Test
-    // public void testAddFriend_MissingFriendId() {
-    // // Arrange - Solo el usuario principal existe
-    // User user = User.builder().id("1").username("user").build();
-    // when(userRepository.findByIdIn(List.of("1", "2"))).thenReturn(List.of(user));
-
-    // // Act & Assert
-    // ResourceNotFoundException exception =
-    // assertThrows(ResourceNotFoundException.class,
-    // () -> userService.addFriend("1", "2"));
-
-    // assertEquals("User not found with id : 2", exception.getMessage());
-    // }
-
     @Test
-    public void testAddFriend_UserOrderInResponse() {
+    void testAddFriend_UserOrderInResponse() {
         // Arrange
         User user1 = User.builder().id("1").friendsIds(new HashSet<>()).build();
         User user2 = User.builder().id("2").friendsIds(new HashSet<>()).build();
@@ -462,7 +411,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testAddFriend_MissingUserId() {
+    void testAddFriend_MissingUserId() {
         // Arrange: Solo existe el amigo (friend)
         User friend = User.builder().id("2").username("friend").build();
         when(userRepository.findByIdIn(List.of("1", "2"))).thenReturn(List.of(friend));
@@ -476,7 +425,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testAddFriend_MissingFriendId() {
+    void testAddFriend_MissingFriendId() {
         // Arrange: Solo existe el usuario principal
         User user = User.builder().id("1").username("user").build();
         when(userRepository.findByIdIn(List.of("1", "2"))).thenReturn(List.of(user));
@@ -490,7 +439,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testCreateUser_DuplicateUsername() {
+    void testCreateUser_DuplicateUsername() {
         // Arrange
         CreateUserDTO dto = new CreateUserDTO(
                 "1",
@@ -517,7 +466,7 @@ public class UserServiceImpTest {
 
     // ==================== PRUEBAS PARA updateUserStats ====================
     @Test
-    public void testUpdateUserStats_IncrementLostGames() {
+    void testUpdateUserStats_IncrementLostGames() {
         // Arrange - Usuario con valores iniciales
         User user = User.builder()
                 .id("1")
@@ -541,7 +490,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testUpdateUserStats_NewBestScoreOnLoss() {
+    void testUpdateUserStats_NewBestScoreOnLoss() {
         // Arrange - Usuario con bestScore bajo
         User user = User.builder()
                 .id("1")
@@ -563,7 +512,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testUpdateStats_PlayerNotFoundInRequest() {
+    void testUpdateStats_PlayerNotFoundInRequest() {
         // Arrange - Stat con playerId que no existe en la lista de players
         UpdateStatsRequest request = new UpdateStatsRequest();
         request.setStats(List.of(
@@ -581,7 +530,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testUpdateStats_UserNotInDatabase() {
+    void testUpdateStats_UserNotInDatabase() {
         // Arrange - Player existe en el request pero no en la base de datos
         UpdateStatsRequest request = new UpdateStatsRequest();
         String missingPlayerId = "player2";
@@ -601,7 +550,7 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testUpdateStats_Team1Wins() {
+    void testUpdateStats_Team1Wins() {
         // Arrange
         // 1. Crear User (sin team)
         User team1Player = User.builder()
@@ -647,7 +596,7 @@ public class UserServiceImpTest {
 
     // ==================== PRUEBAS PARA updateGameStats ====================
     @Test
-    public void testUpdateGameStats_IncrementLostGames() throws Exception {
+    void testUpdateGameStats_IncrementLostGames() throws Exception {
         // 1. Configurar datos de prueba
         UpdateStatsRequest request = new UpdateStatsRequest();
         request.setPlayers(List.of(
@@ -679,7 +628,7 @@ public class UserServiceImpTest {
 
     // ==================== PRUEBAS PARA getAllUserSummaries ====================
     @Test
-    public void testGetAllUserSummaries_Success() {
+    void testGetAllUserSummaries_Success() {
         // Arrange
         List<String> ids = List.of("1", "2");
         List<UserSummaryDTO> mockSummaries = List.of(
@@ -708,68 +657,16 @@ public class UserServiceImpTest {
     }
 
     @Test
-    public void testGetAllUserSummaries_EmptyList() {
+    void testGetAllUserSummaries_EmptyList() {
         when(userRepository.findAllUserSummaries(anyList())).thenReturn(Collections.emptyList());
 
         List<UserSummaryDTO> result = userService.getAllUserSummaries(List.of("99"));
 
         assertTrue(result.isEmpty());
     }
-    // @Test
-    // public void testFindPotentialFriends_SortDescending() {
-    // // Arrange
-    // String currentUserId = "1";
-    // String searchTerm = "user";
-    // int pageNumber = 0;
-    // int pageSize = 10;
-    // String sortBy = "username";
-    // String sortDir = "desc";
-
-    // // Configurar usuario actual y amigos
-    // User currentUser = User.builder()
-    // .id(currentUserId)
-    // .friendsIds(Set.of("2"))
-    // .build();
-
-    // Set<String> excludedIds = new HashSet<>(currentUser.getFriendsIds());
-    // excludedIds.add(currentUserId); // IDs excluidos: ["1", "2"]
-
-    // // Mock de usuarios ordenados DESC por username
-    // List<User> mockUsers = Arrays.asList(
-    // User.builder().id("3").username("userC").build(),
-    // User.builder().id("4").username("userB").build(),
-    // User.builder().id("5").username("userA").build()
-    // );
-
-    // Page<User> usersPage = new PageImpl<>(
-    // mockUsers,
-    // PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending()),
-    // mockUsers.size()
-    // );
-
-    // // Configurar mocks
-    // when(userRepository.findById(currentUserId)).thenReturn(Optional.of(currentUser));
-    // when(userRepository.findByUsernameContainingIgnoreCaseAndIdNotIn(
-    // searchTerm.trim(),
-    // excludedIds,
-    // PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending())
-    // )).thenReturn(usersPage);
-
-    // // Act
-    // UsersResponse response = userService.findPotentialFriends(
-    // currentUserId, searchTerm, pageNumber, pageSize, sortBy, sortDir
-    // );
-
-    // // Assert - Verificar orden DESC
-    // assertEquals(3, response.getUsers().size());
-    // assertEquals("userC", response.getUsers().get(0).getUsername()); // Primero
-    // en DESC
-    // assertEquals("userA", response.getUsers().get(2).getUsername());
-    // assertEquals(sortDir.toUpperCase(), response.getSortDir());
-    // }
 
     @Test
-    public void testFindPotentialFriends_EmptySearchTermUsesFindByIdNotIn() {
+    void testFindPotentialFriends_EmptySearchTermUsesFindByIdNotIn() {
         // Arrange
         String currentUserId = "1";
         String searchTerm = "";
@@ -823,47 +720,8 @@ public class UserServiceImpTest {
         assertEquals("user3", response.getUsers().get(0).getUsername());
     }
 
-// @Test
-// public void testRemoveFriend_Success() {
-//     // Arrange
-//     String userId = "1";
-//     String friendId = "2";
-    
-//     User user = User.builder()
-//             .id(userId)
-//             .friendsIds(new HashSet<>(Set.of(friendId))) // Tienen amistad
-//             .build();
-            
-//     User friend = User.builder()
-//             .id(friendId)
-//             .friendsIds(new HashSet<>(Set.of(userId))) // Amistad recíproca
-//             .build();
-
-//     // Configurar mocks
-//     when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-//     when(userRepository.findById(friendId)).thenReturn(Optional.of(friend));
-//     when(userRepository.save(user)).thenReturn(user);
-//     when(userRepository.save(friend)).thenReturn(friend);
-
-//     // Act
-//     FriendResponseDTO response = userService.removeFriend(userId, friendId);
-
-//     // Assert
-//     assertEquals("REMOVED", response.getOperation());
-//     assertEquals(userId, response.getUserId());
-//     assertEquals(friendId, response.getFriendId());
-//     assertEquals(user.getFriendsIds().size(), response.getCurrentFriendsCount());
-    
-//     // Verificar que se eliminó la amistad en ambos usuarios
-//     assertFalse(user.getFriendsIds().contains(friendId), "El amigo debería ser removido de la lista de user");
-//     assertFalse(friend.getFriendsIds().contains(userId), "El user debería ser removido de la lista de friend");
-    
-//     verify(userRepository).save(user);
-//     verify(userRepository).save(friend);
-// }
-
 @Test
-public void testRemoveFriend_VerifyFriendRemovalFromBothSides() {
+void testRemoveFriend_VerifyFriendRemovalFromBothSides() {
     // Arrange
     User user = User.builder()
             .id("1")
@@ -888,7 +746,7 @@ public void testRemoveFriend_VerifyFriendRemovalFromBothSides() {
 }
 
 @Test
-public void testRemoveFriend_ReturnsCorrectFriendCount() {
+void testRemoveFriend_ReturnsCorrectFriendCount() {
     // Arrange - Usuario con 2 amigos, elimina 1
     User user = User.builder()
             .id("1")
@@ -913,7 +771,7 @@ public void testRemoveFriend_ReturnsCorrectFriendCount() {
 }
 
 @Test
-public void testRemoveFriend_SavesBothUsers() {
+void testRemoveFriend_SavesBothUsers() {
     // Arrange
     User user = User.builder().id("1").friendsIds(new HashSet<>(Set.of("2"))).build();
     User friend = User.builder().id("2").friendsIds(new HashSet<>(Set.of("1"))).build();
@@ -935,7 +793,7 @@ public void testRemoveFriend_SavesBothUsers() {
     assertTrue(savedUsers.contains(friend));
 }
 @Test
-public void testFindPotentialFriends_SortDescending() {
+void testFindPotentialFriends_SortDescending() {
     // Arrange
     String currentUserId = "1";
     String searchTerm = "user";
@@ -990,7 +848,7 @@ public void testFindPotentialFriends_SortDescending() {
 }
 
 @Test
-public void testFindPotentialFriends_SortDescending_VerifyPageable() {
+void testFindPotentialFriends_SortDescending_VerifyPageable() {
     // Arrange
     String currentUserId = "1";
     String sortBy = "username";

@@ -20,7 +20,7 @@ import co.edu.eci.pigball.user.dto.ErrorDetails;
 import co.edu.eci.pigball.user.exception.*;
 
 @ExtendWith(MockitoExtension.class)
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 
     @InjectMocks
     private GlobalExceptionHandler exceptionHandler;
@@ -29,7 +29,7 @@ public class GlobalExceptionHandlerTest {
 
     // ------------------------- Pruebas para ResourceNotFoundException -------------------------
     @Test
-    public void testHandleResourceNotFoundException() {
+    void testHandleResourceNotFoundException() {
         ResourceNotFoundException ex = new ResourceNotFoundException("User", "id", "123");
         when(webRequest.getDescription(false)).thenReturn("details");
 
@@ -41,7 +41,7 @@ public class GlobalExceptionHandlerTest {
 
     // ------------------------- Pruebas para BlogAppException -------------------------
     @Test
-    public void testHandleBlogAppException() {
+    void testHandleBlogAppException() {
         BlogAppException ex = new BlogAppException(HttpStatus.BAD_REQUEST, "Error de prueba");
         when(webRequest.getDescription(false)).thenReturn("details");
 
@@ -53,7 +53,7 @@ public class GlobalExceptionHandlerTest {
 
     // ------------------------- Pruebas para DuplicateResourceException -------------------------
     @Test
-    public void testHandleDuplicateResourceException() {
+    void testHandleDuplicateResourceException() {
         DuplicateResourceException ex = new DuplicateResourceException("User", "email", "user@test.com");
         when(webRequest.getDescription(false)).thenReturn("details");
 
@@ -65,7 +65,7 @@ public class GlobalExceptionHandlerTest {
 
     // ------------------------- Pruebas para Exception global -------------------------
     @Test
-    public void testHandleGlobalException() {
+    void testHandleGlobalException() {
         Exception ex = new RuntimeException("Error inesperado");
         when(webRequest.getDescription(true)).thenReturn("details_with_trace");
 
@@ -77,7 +77,7 @@ public class GlobalExceptionHandlerTest {
 
     // ------------------------- Pruebas para Validación de Argumentos -------------------------
     @Test
-        void testHandleMethodArgumentNotValid() {
+    void testHandleMethodArgumentNotValid() {
             // Arrange
             BindingResult bindingResult = mock(BindingResult.class);
             MethodArgumentNotValidException ex = new MethodArgumentNotValidException(
