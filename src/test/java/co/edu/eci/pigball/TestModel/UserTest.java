@@ -449,9 +449,10 @@ class UserTest {
     @Test
     void testToStringWithEmptyFields() {
         User user1 = new User();
-        user.setId("empty");
+        user1.setId("empty");
         String str = user1.toString();
 
+        System.out.println(str);
         assertTrue(str.contains("id=empty"));
         assertTrue(str.contains("lostGames=0")); // Valores por defecto
         assertTrue(str.contains("friendsIds=[]")); // Set vacío
