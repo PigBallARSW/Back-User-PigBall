@@ -449,7 +449,7 @@ class UserTest {
     @Test
     void testToStringWithEmptyFields() {
         User user1 = new User();
-        user.setId("empty");
+        user1.setId("empty");
         String str = user1.toString();
 
         assertTrue(str.contains("id=empty"));
