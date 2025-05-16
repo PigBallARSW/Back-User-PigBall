@@ -186,8 +186,8 @@ class CreateUserDTOTest {
         assertNotEquals(dto1.hashCode(), dto3.hashCode());
 
         // null and different class
-        assertNotEquals(dto1, null);
-        assertNotEquals(dto1, "some string");
+        assertNotEquals( null,dto1);
+        assertNotEquals( "some string",dto1);
     }
 
     @Test
@@ -235,8 +235,8 @@ class CreateUserDTOTest {
 
         // Null and different class
 
-        assertNotEquals(dto1, null);
-        assertNotEquals(dto1, "string");
+        assertNotEquals(null,dto1);
+        assertNotEquals("string",dto1);
     }
 
     @Test
