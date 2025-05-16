@@ -266,7 +266,7 @@ class UpdateStatsRequestTest {
         @Test
         void testStatEqualsWithDifferentTypes() {
                 UpdateStatsRequest.Stat stat = new UpdateStatsRequest.Stat("a", "b");
-                assertNotEquals(stat, "not-a-stat");
+                assertNotEquals( "not-a-stat",stat);
         }
 
         @Test
@@ -371,7 +371,7 @@ class UpdateStatsRequestTest {
                 UpdateStatsRequest.PlayerDTO player = new UpdateStatsRequest.PlayerDTO(
                                 "id1", "player1", "session1", 1, 10.0, 20.0);
 
-                assertNotEquals(player, "Soy un String, no un PlayerDTO");
+                assertNotEquals( "Soy un String, no un PlayerDTO",player);
         }
 
         // Prueba de hashCode con campos null
@@ -443,7 +443,7 @@ class UpdateStatsRequestTest {
         @Test
         void testPlayerDTOEquals_DifferentObjectType_ShouldNotBeEqual() {
                 PlayerDTO player = new PlayerDTO("1", "Dave", "s4", 1, 0.0, 0.0);
-                assertNotEquals(player, "Not a PlayerDTO");
+                assertNotEquals( "Not a PlayerDTO",player);
         }
 
         @Test

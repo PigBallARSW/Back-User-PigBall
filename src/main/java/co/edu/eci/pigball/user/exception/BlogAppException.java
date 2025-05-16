@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class BlogAppException extends RuntimeException{
-    private HttpStatus status;
-    private String message;
+    private final HttpStatus status;
+    private final String message;
 
     public BlogAppException(HttpStatus status, String message) {
         super(message);

@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import co.edu.eci.pigball.user.utils.AppConstants;
 
-public class AppConstantsTest {
+class AppConstantsTest {
 
     @Test
-    public void testSimpleConstantsCheck() {
+    void testSimpleConstantsCheck() {
         // Verificación básica de valores
         assertAll(
                 () -> assertEquals("0", AppConstants.PAGE_NUMBER_BY_DEFAULT),

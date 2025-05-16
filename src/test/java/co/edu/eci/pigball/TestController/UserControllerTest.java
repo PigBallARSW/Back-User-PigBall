@@ -4,8 +4,6 @@ import co.edu.eci.pigball.user.UserApplication;
 import co.edu.eci.pigball.user.controller.UserController;
 import co.edu.eci.pigball.user.dto.*;
 import co.edu.eci.pigball.user.model.request.UpdateStatsRequest;
-import co.edu.eci.pigball.user.model.request.UpdateStatsRequest.PlayerDTO;
-import co.edu.eci.pigball.user.model.request.UpdateStatsRequest.Stat;
 import co.edu.eci.pigball.user.service.UserServiceImp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -30,12 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 @ContextConfiguration(classes = UserApplication.class)
 @TestPropertySource(properties = "server.ssl.enabled=false")
-public class UserControllerTest {
+class UserControllerTest {
 
         @Autowired
         private MockMvc mockMvc;
 
-        @MockBean
+        @MockitoBean
         private UserServiceImp userService;
 
         @Autowired
@@ -45,7 +44,7 @@ public class UserControllerTest {
         private UserSummaryDTO sampleSummary;
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
                 sampleUser = UserResponseDTO.builder()
                                 .id("1")
                                 .username("jag")
@@ -71,7 +70,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testCreateUser() throws Exception {
+        void testCreateUser() throws Exception {
                 CreateUserDTO dto = CreateUserDTO.builder()
                                 .id("1")
                                 .username("jag")
@@ -93,7 +92,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testGetUserById() throws Exception {
+        void testGetUserById() throws Exception {
                 Mockito.when(userService.getUserById("1")).thenReturn(sampleUser);
 
                 mockMvc.perform(get("/user/1"))
@@ -102,7 +101,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testGetAllUsers() throws Exception {
+        void testGetAllUsers() throws Exception {
                 Mockito.when(userService.getAllUsers()).thenReturn(Collections.singletonList(sampleUser));
 
                 mockMvc.perform(get("/user"))
@@ -111,8 +110,8 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testUpdateUserStats() throws Exception {
-                Mockito.when(userService.updateUserStats(eq("1"), eq(100), eq(true))).thenReturn(sampleUser);
+        void testUpdateUserStats() throws Exception {
+                Mockito.when(userService.updateUserStats("1", 100, true)).thenReturn(sampleUser);
 
                 mockMvc.perform(put("/user/stats/1")
                                 .param("score", "100")
@@ -122,7 +121,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testUpdateUser() throws Exception {
+        void testUpdateUser() throws Exception {
                 UpdateUserDTO dto = UpdateUserDTO.builder()
                                 .username("newName")
                                 .image("new.png")
@@ -142,7 +141,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testDeleteUser() throws Exception {
+        void testDeleteUser() throws Exception {
                 Mockito.doNothing().when(userService).deleteUser("1");
 
                 mockMvc.perform(delete("/user/1"))
@@ -150,7 +149,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testGetUserSummaries() throws Exception {
+        void testGetUserSummaries() throws Exception {
                 Mockito.when(userService.getAllUserSummaries(anyList()))
                                 .thenReturn(Collections.singletonList(sampleSummary));
 
@@ -162,7 +161,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testGetPotentialFriends() throws Exception {
+        void testGetPotentialFriends() throws Exception {
                 UsersResponse resp = UsersResponse.builder()
                                 .users(Collections.emptyList())
                                 .pagesNo(0)
@@ -191,7 +190,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testAddFriend() throws Exception {
+        void testAddFriend() throws Exception {
                 FriendResponseDTO added = FriendResponseDTO.added("1", "2", 1);
                 Mockito.when(userService.addFriend("1", "2")).thenReturn(added);
 
@@ -201,7 +200,7 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testRemoveFriend() throws Exception {
+        void testRemoveFriend() throws Exception {
                 FriendResponseDTO removed = FriendResponseDTO.removed("1", "2", 0);
                 Mockito.when(userService.removeFriend("1", "2")).thenReturn(removed);
 
@@ -211,56 +210,56 @@ public class UserControllerTest {
         }
 
         @Test
-        public void testGetUserByUsername() throws Exception {
-        Mockito.when(userService.getUserByUsername("jag")).thenReturn(sampleUser);
+        void testGetUserByUsername() throws Exception {
+                Mockito.when(userService.getUserByUsername("jag")).thenReturn(sampleUser);
 
-        mockMvc.perform(get("/user/username/jag"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("jag"))
-                .andExpect(jsonPath("$.totalScore").value(0));
+                mockMvc.perform(get("/user/username/jag"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.username").value("jag"))
+                                .andExpect(jsonPath("$.totalScore").value(0));
         }
 
         @Test
-        public void testUpdateStats() throws Exception {
-        // 1. Configurar el request
-        UpdateStatsRequest request = new UpdateStatsRequest();
-        request.setStats(List.of(
-                new UpdateStatsRequest.Stat("player1", "GOAL_SCORED") // Ejemplo realista
-        ));
-        request.setPlayers(List.of(
-                new UpdateStatsRequest.PlayerDTO("player1", "Jugador1", "session123", 0, 10.5, 20.3)
-        ));
+        void testUpdateStats() throws Exception {
+                // 1. Configurar el request
+                UpdateStatsRequest request = new UpdateStatsRequest();
+                request.setStats(List.of(
+                                new UpdateStatsRequest.Stat("player1", "GOAL_SCORED") // Ejemplo realista
+                ));
+                request.setPlayers(List.of(
+                                new UpdateStatsRequest.PlayerDTO("player1", "Jugador1", "session123", 0, 10.5, 20.3)));
 
-        // 2. Mockear el servicio para retornar el String esperado
-        Mockito.when(userService.updateStats(Mockito.any(UpdateStatsRequest.class)))
-                .thenReturn("statistics update successful");
+                // 2. Mockear el servicio para retornar el String esperado
+                Mockito.when(userService.updateStats(Mockito.any(UpdateStatsRequest.class)))
+                                .thenReturn("statistics update successful");
 
-        // 3. Ejecutar y validar
-        mockMvc.perform(put("/user/stats")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("statistics update successful")); // Validar el String de respuesta
+                // 3. Ejecutar y validar
+                mockMvc.perform(put("/user/stats")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(content().string("statistics update successful")); // Validar el String de
+                                                                                              // respuesta
         }
 
         @Test
-        public void testGetFriends() throws Exception {
-        // Configurar respuesta esperada
-        UsersResponse response = UsersResponse.builder()
-                .users(Collections.singletonList(sampleUser)) // Usar UserResponseDTO
-                .pagesNo(0)
-                .pageSize(10)
-                .totalPages(1)
-                .lastOne(true)
-                .totalElements(1L)
-                .build();
+        void testGetFriends() throws Exception {
+                // Configurar respuesta esperada
+                UsersResponse response = UsersResponse.builder()
+                                .users(Collections.singletonList(sampleUser)) // Usar UserResponseDTO
+                                .pagesNo(0)
+                                .pageSize(10)
+                                .totalPages(1)
+                                .lastOne(true)
+                                .totalElements(1L)
+                                .build();
 
-        Mockito.when(userService.getFriendsList("1")).thenReturn(response);
+                Mockito.when(userService.getFriendsList("1")).thenReturn(response);
 
-        mockMvc.perform(get("/user/1/friends"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.users[0].username").value("jag")) // UserResponseDTO
-                .andExpect(jsonPath("$.pagesNo").value(0))
-                .andExpect(jsonPath("$.totalElements").value(1));
+                mockMvc.perform(get("/user/1/friends"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.users[0].username").value("jag")) // UserResponseDTO
+                                .andExpect(jsonPath("$.pagesNo").value(0))
+                                .andExpect(jsonPath("$.totalElements").value(1));
         }
 }

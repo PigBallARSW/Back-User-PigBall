@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-public class BlogAppExceptionTest {
+class BlogAppExceptionTest {
 
     @Test
-    public void testExceptionCreation() {
+    void testExceptionCreation() {
         // Arrange
         HttpStatus status = HttpStatus.NOT_FOUND;
         String message = "Resource not found";

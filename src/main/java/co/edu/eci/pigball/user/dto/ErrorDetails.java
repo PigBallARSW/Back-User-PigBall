@@ -12,5 +12,5 @@ public class ErrorDetails {
     private Date timestamp;
     private String message;
     private String details;
-    private List<String> StackTrace;
+    private List<String> stackTrace;
 }

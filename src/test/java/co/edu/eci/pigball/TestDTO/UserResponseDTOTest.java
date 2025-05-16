@@ -285,13 +285,13 @@ class UserResponseDTOTest {
     @Test
     void testEquals_NullComparison_ReturnsFalse() {
         UserResponseDTO dto = UserResponseDTO.builder().username("test").build();
-        assertNotEquals(dto, null);
+        assertNotEquals(null,dto);
     }
 
     @Test
     void testEquals_DifferentClass_ReturnsFalse() {
         UserResponseDTO dto = UserResponseDTO.builder().build();
-        assertNotEquals(dto, "Not a UserResponseDTO");
+        assertNotEquals("Not a UserResponseDTO",dto);
     }
 
     @Test

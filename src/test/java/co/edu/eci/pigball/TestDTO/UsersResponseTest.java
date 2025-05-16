@@ -167,7 +167,7 @@ class UsersResponseTest {
         @Test
         void testEquals_DifferentClass_ReturnsFalse() {
                 UsersResponse response = UsersResponse.builder().build();
-                assertNotEquals(response, "Not a UsersResponse object");
+                assertNotEquals( "Not a UsersResponse object",response);
         }
 
         @Test

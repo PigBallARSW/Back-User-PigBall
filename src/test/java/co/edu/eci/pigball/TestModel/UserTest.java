@@ -10,12 +10,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserTest {
+class UserTest {
 
     private User user;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         user = User.builder()
                 .id("1")
                 .username("jag")
@@ -28,59 +28,59 @@ public class UserTest {
     }
 
     @Test
-    public void testIncrementLostGames() {
+    void testIncrementLostGames() {
         user.incrementLostGames();
         assertEquals(3, user.getLostGames());
     }
 
     @Test
-    public void testIncrementGamesWon() {
+    void testIncrementGamesWon() {
         user.incrementGamesWon();
         assertEquals(4, user.getGamesWon());
     }
 
     @Test
-    public void testAddToTotalScoreWithPositivePoints() {
+    void testAddToTotalScoreWithPositivePoints() {
         user.addToTotalScore(20);
         assertEquals(120, user.getTotalScore());
     }
 
     @Test
-    public void testAddToTotalScoreWithNegativePoints() {
+    void testAddToTotalScoreWithNegativePoints() {
         user.addToTotalScore(-10);
         assertEquals(100, user.getTotalScore()); // No cambia
     }
 
     @Test
-    public void testUpdateBestScoreWithHigherScore() {
+    void testUpdateBestScoreWithHigherScore() {
         user.updateBestScore(60);
         assertEquals(60, user.getBestScore());
     }
 
     @Test
-    public void testUpdateBestScoreWithLowerScore() {
+    void testUpdateBestScoreWithLowerScore() {
         user.updateBestScore(40);
         assertEquals(50, user.getBestScore()); // Permanece igual
     }
 
     @Test
-    public void testGetGamesPlayed() {
+    void testGetGamesPlayed() {
         assertEquals(5, user.getGamesPlayed()); // 2 lost + 3 won
     }
 
     @Test
-    public void testGetWinningPercentageWithGamesPlayed() {
+    void testGetWinningPercentageWithGamesPlayed() {
         assertEquals(60.0, user.getWinningPercentage(), 0.001); // (3/5)*100 = 60%
     }
 
     @Test
-    public void testGetWinningPercentageWithNoGames() {
+    void testGetWinningPercentageWithNoGames() {
         User newUser = User.builder().username("new").build();
         assertEquals(0.0, newUser.getWinningPercentage(), 0.001);
     }
 
     @Test
-    public void testBuilderWithDefaults() {
+    void testBuilderWithDefaults() {
         User defaultUser = User.builder().username("default").build();
         assertEquals(0, defaultUser.getLostGames());
         assertEquals(0, defaultUser.getTotalScore());
@@ -88,25 +88,25 @@ public class UserTest {
     }
 
     @Test
-    public void testAddNullFriendId() {
+    void testAddNullFriendId() {
         user.addFriendId(null);
         assertEquals(2, user.getFriendsIds().size()); // No cambios
     }
 
     @Test
-    public void testAddFriendId() {
+    void testAddFriendId() {
         user.addFriendId("4");
         assertTrue(user.getFriendsIds().contains("4")); // ✅ Ahora es mutable
     }
 
     @Test
-    public void testRemoveFriendId() {
+    void testRemoveFriendId() {
         user.removeFriendId("2");
         assertFalse(user.getFriendsIds().contains("2")); // ✅
     }
 
     @Test
-    public void testRemoveNonExistentFriendId() {
+    void testRemoveNonExistentFriendId() {
         user.removeFriendId("99");
         assertEquals(2, user.getFriendsIds().size()); // ✅
     }
@@ -149,13 +149,13 @@ public class UserTest {
     @Test
     void testEqualsWithSameObject() {
         // Arrange
-        User user = User.builder()
+        User user1 = User.builder()
                 .id("user123")
                 .username("testUser")
                 .build();
 
         // Act & Assert
-        assertEquals(user, user);
+        assertEquals(user1, user1);
     }
 
     @Test
@@ -199,19 +199,19 @@ public class UserTest {
     @Test
     void testEqualsWithNull() {
         // Arrange
-        User user = User.builder()
+        User user1 = User.builder()
                 .id("user123")
                 .username("testUser")
                 .build();
 
         // Act & Assert
-        assertNotEquals(null, user);
+        assertNotEquals(null, user1);
     }
 
     @Test
     void testEqualsWithDifferentClass() {
         // Arrange
-        User user = User.builder()
+        User user1 = User.builder()
                 .id("user123")
                 .username("testUser")
                 .build();
@@ -219,13 +219,13 @@ public class UserTest {
         Object otherObject = new Object();
 
         // Act & Assert
-        assertNotEquals(user, otherObject);
+        assertNotEquals(user1, otherObject);
     }
 
     @Test
     void testToStringContainsRelevantInformation() {
         // Arrange
-        User user = User.builder()
+        User user1 = User.builder()
                 .id("user123")
                 .username("testUser")
                 .gamesWon(3)
@@ -241,7 +241,7 @@ public class UserTest {
                 .build();
 
         // Act
-        String result = user.toString();
+        String result = user1.toString();
 
         // Assert
         assertAll(
@@ -262,7 +262,7 @@ public class UserTest {
     @Test
     void testSetters() {
         // Arrange
-        User user = new User();
+        User user1 = new User();
         String expectedId = "newId123";
         int expectedLostGames = 3;
         int expectedGamesWon = 5;
@@ -274,37 +274,37 @@ public class UserTest {
         Set<String> expectedFriendsIds = Set.of("friend1", "friend2");
 
         // Act
-        user.setId(expectedId);
-        user.setLostGames(expectedLostGames);
-        user.setGamesWon(expectedGamesWon);
-        user.setTotalScore(expectedTotalScore);
-        user.setBestScore(expectedBestScore);
-        user.setIconType(expectedIconType);
-        user.setCenterColor(expectedCenterColor);
-        user.setIconColor(expectedIconColor);
-        user.setFriendsIds(expectedFriendsIds);
+        user1.setId(expectedId);
+        user1.setLostGames(expectedLostGames);
+        user1.setGamesWon(expectedGamesWon);
+        user1.setTotalScore(expectedTotalScore);
+        user1.setBestScore(expectedBestScore);
+        user1.setIconType(expectedIconType);
+        user1.setCenterColor(expectedCenterColor);
+        user1.setIconColor(expectedIconColor);
+        user1.setFriendsIds(expectedFriendsIds);
 
         // Assert
         assertAll(
-                () -> assertEquals(expectedId, user.getId()),
-                () -> assertEquals(expectedLostGames, user.getLostGames()),
-                () -> assertEquals(expectedGamesWon, user.getGamesWon()),
-                () -> assertEquals(expectedTotalScore, user.getTotalScore()),
-                () -> assertEquals(expectedBestScore, user.getBestScore()),
-                () -> assertEquals(expectedIconType, user.getIconType()),
-                () -> assertEquals(expectedCenterColor, user.getCenterColor()),
-                () -> assertEquals(expectedIconColor, user.getIconColor()),
-                () -> assertEquals(expectedFriendsIds, user.getFriendsIds()));
+                () -> assertEquals(expectedId, user1.getId()),
+                () -> assertEquals(expectedLostGames, user1.getLostGames()),
+                () -> assertEquals(expectedGamesWon, user1.getGamesWon()),
+                () -> assertEquals(expectedTotalScore, user1.getTotalScore()),
+                () -> assertEquals(expectedBestScore, user1.getBestScore()),
+                () -> assertEquals(expectedIconType, user1.getIconType()),
+                () -> assertEquals(expectedCenterColor, user1.getCenterColor()),
+                () -> assertEquals(expectedIconColor, user1.getIconColor()),
+                () -> assertEquals(expectedFriendsIds, user1.getFriendsIds()));
     }
 
-    public void testAddExistingFriendId() {
+    void testAddExistingFriendId() {
         user.addFriendId("2"); // Ya existe en el setup
         assertEquals(2, user.getFriendsIds().size()); // Tamaño no cambia
     }
 
     // Pruebas para múltiples incrementos
     @Test
-    public void testMultipleIncrementLostGames() {
+    void testMultipleIncrementLostGames() {
         user.incrementLostGames();
         user.incrementLostGames();
         assertEquals(4, user.getLostGames());
@@ -312,21 +312,21 @@ public class UserTest {
 
     // Actualizar bestScore con mismo valor
     @Test
-    public void testUpdateBestScoreWithSameScore() {
+    void testUpdateBestScoreWithSameScore() {
         user.updateBestScore(50); // Mismo que el valor inicial
         assertEquals(50, user.getBestScore());
     }
 
     // Prueba addToTotalScore con 0 puntos
     @Test
-    public void testAddZeroToTotalScore() {
+    void testAddZeroToTotalScore() {
         user.addToTotalScore(0);
         assertEquals(100, user.getTotalScore());
     }
 
     // Prueba getWinningPercentage con 0 juegos ganados
     @Test
-    public void testGetWinningPercentageWithZeroWins() {
+    void testGetWinningPercentageWithZeroWins() {
         User newUser = User.builder()
                 .lostGames(5)
                 .gamesWon(0)
@@ -336,7 +336,7 @@ public class UserTest {
 
     // Prueba constructor sin builder
     @Test
-    public void testNoArgsConstructor() {
+    void testNoArgsConstructor() {
         User emptyUser = new User();
         assertNotNull(emptyUser); // Asegura que se puede crear
     }
@@ -351,7 +351,7 @@ public class UserTest {
 
     // Prueba para cubrir el branch faltante en removeFriendId (friendId = null):
     @Test
-    public void testRemoveNullFriendId() {
+    void testRemoveNullFriendId() {
         user.removeFriendId(null);
         assertEquals(2, user.getFriendsIds().size()); // No debe modificar el set
         assertFalse(user.getFriendsIds().contains(null)); // Asegurar que no guarda nulls
@@ -424,7 +424,7 @@ public class UserTest {
 
     @Test
     void testBuilderWithAllFields() {
-        User user = User.builder()
+        User user1 = User.builder()
                 .id("full")
                 .username("fullUser")
                 .lostGames(1)
@@ -439,18 +439,18 @@ public class UserTest {
                 .friendsIds(Set.of("friend1"))
                 .build();
 
-        assertNotNull(user);
-        assertEquals("full", user.getId());
-        assertEquals("#111", user.getBorderColor());
-        assertTrue(user.getFriendsIds().contains("friend1"));
+        assertNotNull(user1);
+        assertEquals("full", user1.getId());
+        assertEquals("#111", user1.getBorderColor());
+        assertTrue(user1.getFriendsIds().contains("friend1"));
     }
 
     // pruebas para toString
     @Test
     void testToStringWithEmptyFields() {
-        User user = new User();
+        User user1 = new User();
         user.setId("empty");
-        String str = user.toString();
+        String str = user1.toString();
 
         assertTrue(str.contains("id=empty"));
         assertTrue(str.contains("lostGames=0")); // Valores por defecto
@@ -459,13 +459,13 @@ public class UserTest {
 
     @Test
     void testToStringWithSpecialCharacters() {
-        User user = User.builder()
+        User user1 = User.builder()
                 .borderColor("#!@#")
                 .username("user@name")
                 .iconType("type/with/slashes")
                 .build();
 
-        String str = user.toString();
+        String str = user1.toString();
         assertTrue(str.contains("#!@#"));
         assertTrue(str.contains("user@name"));
         assertTrue(str.contains("type/with/slashes"));
@@ -480,13 +480,6 @@ public class UserTest {
     }
 
     @Test
-    void testEqualsWithDifferentBorderColor2() {
-        User user1 = User.builder().id("1").borderColor("#000").build();
-        User user2 = User.builder().id("1").borderColor("#FFF").build();
-        assertNotEquals(user1, user2);
-    }
-
-    @Test
     void testEqualsWithDifferentFriendsIds() {
         User user1 = User.builder().id("1").friendsIds(Set.of("a")).build();
         User user2 = User.builder().id("1").friendsIds(Set.of("b")).build();
@@ -496,8 +489,8 @@ public class UserTest {
     // edge case hashcode
     @Test
     void testHashCodeConsistencyAfterModification() {
-        User user = User.builder().id("1").build();
-        int initialHash = user.hashCode();
+        User user1 = User.builder().id("1").build();
+        int initialHash = user1.hashCode();
 
         user.setUsername("newName");
         assertNotEquals(initialHash, user.hashCode());

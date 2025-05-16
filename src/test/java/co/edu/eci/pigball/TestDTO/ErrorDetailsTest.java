@@ -24,7 +24,7 @@ class ErrorDetailsTest {
                 .timestamp(expectedTimestamp)
                 .message(expectedMessage)
                 .details(expectedDetails)
-                .StackTrace(expectedStackTrace)
+                .stackTrace(expectedStackTrace)
                 .build();
 
         // Assert
@@ -68,21 +68,21 @@ class ErrorDetailsTest {
                 .timestamp(timestamp)
                 .message("Error")
                 .details("Details")
-                .StackTrace(stackTrace)
+                .stackTrace(stackTrace)
                 .build();
 
         ErrorDetails errorDetails2 = ErrorDetails.builder()
                 .timestamp(timestamp)
                 .message("Error")
                 .details("Details")
-                .StackTrace(stackTrace)
+                .stackTrace(stackTrace)
                 .build();
 
         ErrorDetails differentErrorDetails = ErrorDetails.builder()
                 .timestamp(new Date(timestamp.getTime() + 1000))
                 .message("Different Error")
                 .details("Different Details")
-                .StackTrace(Arrays.asList("different trace"))
+                .stackTrace(Arrays.asList("different trace"))
                 .build();
 
         // Assert
@@ -101,7 +101,7 @@ class ErrorDetailsTest {
                 .timestamp(timestamp)
                 .message("Test message")
                 .details("Test details")
-                .StackTrace(Arrays.asList("trace1", "trace2"))
+                .stackTrace(Arrays.asList("trace1", "trace2"))
                 .build();
 
         // Act
@@ -131,7 +131,7 @@ class ErrorDetailsTest {
         @Test
         void testEquals_DifferentClass_ReturnsFalse() {
         ErrorDetails error = ErrorDetails.builder().build();
-        assertNotEquals(error, "Not an ErrorDetails object");
+        assertNotEquals( "Not an ErrorDetails object",error);
         }
 
         @Test
@@ -166,8 +166,8 @@ class ErrorDetailsTest {
         List<String> trace1 = Arrays.asList("trace1", "trace2");
         List<String> trace2 = Arrays.asList("trace3", "trace4");
         
-        ErrorDetails error1 = ErrorDetails.builder().StackTrace(trace1).build();
-        ErrorDetails error2 = ErrorDetails.builder().StackTrace(trace2).build();
+        ErrorDetails error1 = ErrorDetails.builder().stackTrace(trace1).build();
+        ErrorDetails error2 = ErrorDetails.builder().stackTrace(trace2).build();
         
         assertNotEquals(error1, error2);
         }
@@ -194,7 +194,7 @@ class ErrorDetailsTest {
         void testHashCode_Consistency_ShouldMatch() {
         ErrorDetails error = ErrorDetails.builder()
                 .message("Consistency test")
-                .StackTrace(Arrays.asList("trace"))
+                .stackTrace(Arrays.asList("trace"))
                 .build();
         
         int initialHash = error.hashCode();
@@ -207,7 +207,7 @@ class ErrorDetailsTest {
                 .timestamp(null)
                 .message(null)
                 .details(null)
-                .StackTrace(null)
+                .stackTrace(null)
                 .build();
         
         assertDoesNotThrow(error::hashCode);
@@ -218,8 +218,8 @@ class ErrorDetailsTest {
         List<String> trace1 = Arrays.asList("line1");
         List<String> trace2 = Arrays.asList("line2");
         
-        ErrorDetails error1 = ErrorDetails.builder().StackTrace(trace1).build();
-        ErrorDetails error2 = ErrorDetails.builder().StackTrace(trace2).build();
+        ErrorDetails error1 = ErrorDetails.builder().stackTrace(trace1).build();
+        ErrorDetails error2 = ErrorDetails.builder().stackTrace(trace2).build();
         
         assertNotEquals(error1.hashCode(), error2.hashCode());
         }
@@ -240,7 +240,7 @@ class ErrorDetailsTest {
                 .timestamp(new Date())
                 .message("Base")
                 .details("Details")
-                .StackTrace(Arrays.asList("trace"))
+                .stackTrace(Arrays.asList("trace"))
                 .build();
 
         // Objeto con solo un campo diferente
@@ -248,7 +248,7 @@ class ErrorDetailsTest {
                 .timestamp(base.getTimestamp())
                 .message("Modified") // Único cambio
                 .details(base.getDetails())
-                .StackTrace(base.getStackTrace())
+                .stackTrace(base.getStackTrace())
                 .build();
 
         assertNotEquals(base, modified);
@@ -262,7 +262,7 @@ class ErrorDetailsTest {
                 .timestamp(testDate)
                 .message("Error de prueba")
                 .details("Detalles técnicos")
-                .StackTrace(List.of("StackTraceLine1", "StackTraceLine2"));
+                .stackTrace(List.of("StackTraceLine1", "StackTraceLine2"));
 
         // Obtener representación String del builder
         String builderString = builder.toString();
@@ -272,7 +272,7 @@ class ErrorDetailsTest {
                 () -> assertTrue(builderString.contains("timestamp=" + testDate), "Debe mostrar la fecha"),
                 () -> assertTrue(builderString.contains("message=Error de prueba"), "Debe contener el mensaje"),
                 () -> assertTrue(builderString.contains("details=Detalles técnicos"), "Debe mostrar detalles"),
-                () -> assertTrue(builderString.contains("StackTrace=[StackTraceLine1, StackTraceLine2]"), "Debe mostrar stacktrace")
+                () -> assertTrue(builderString.contains("stackTrace=[StackTraceLine1, StackTraceLine2]"), "Debe mostrar stacktrace")
         );
         }
 }
