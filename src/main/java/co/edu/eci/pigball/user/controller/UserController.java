@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @CrossOrigin(origins = {
+    
+    "https://nice-forest-015f0871e.6.azurestaticapps.net",
     "https://front-pig-ball.vercel.app",
     "https://localhost:3000",
     "http://localhost:3000",
